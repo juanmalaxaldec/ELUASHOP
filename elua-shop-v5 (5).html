@@ -1,0 +1,2423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elua Shop · Perfumes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;1,400&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --cream:#FAF7F2;--beige:#F0EBE0;--tan:#D4C9B0;--brown:#8B7355;
+  --dark:#2C2416;--gold:#C9A96E;--white:#FFFFFF;
+  --green:#2d6a4f;--red:#c0392b;--shadow:rgba(44,36,22,0.08);
+}
+body{font-family:'Montserrat',sans-serif;background:var(--cream);color:var(--dark);font-size:14px}
+.view{display:none}.view.active{display:block}
+a{text-decoration:none}
+button{cursor:pointer;font-family:'Montserrat',sans-serif}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1px solid var(--beige);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100;gap:1rem}
+.nav-logo{cursor:pointer;display:flex;align-items:center}
+.nav-logo img{height:44px;width:auto;object-fit:contain}
+.nav-logo-fallback{display:none;flex-direction:column;line-height:1;gap:2px}
+.nav-logo-main{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--dark);letter-spacing:.04em}
+.nav-logo-sub{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:.28em;color:var(--brown)}
+.nav-links{display:flex;gap:1.75rem;list-style:none}
+.nav-links a{color:var(--dark);font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;transition:color .2s;cursor:pointer}
+.nav-links a:hover{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.nav-search-wrap{display:flex;align-items:center;background:var(--cream);border:1px solid var(--tan);height:34px;padding:0 10px;gap:.4rem;transition:border .2s;width:200px}
+.nav-search-wrap:focus-within{border-color:var(--gold)}
+.nav-search-wrap input{border:none;background:none;outline:none;font-size:11px;color:var(--dark);width:100%;font-family:'Montserrat',sans-serif}
+.nav-search-wrap input::placeholder{color:var(--tan)}
+.nav-search-wrap svg{width:13px;height:13px;flex-shrink:0;stroke:var(--tan);fill:none;stroke-width:2.5;stroke-linecap:round}
+.cart-btn{background:none;border:1px solid var(--tan);padding:7px 14px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;color:var(--dark);transition:all .2s}
+.cart-btn:hover{background:var(--dark);color:var(--white);border-color:var(--dark)}
+.cart-count{background:var(--gold);color:var(--white);font-size:10px;width:17px;height:17px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-left:5px;font-weight:600}
+.admin-link{font-size:10px;color:var(--tan);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.admin-link:hover{color:var(--gold)}
+
+/* SEARCH DROPDOWN */
+.search-drop{position:fixed;top:68px;left:0;right:0;background:var(--white);border-bottom:2px solid var(--gold);z-index:99;display:none;max-height:320px;overflow-y:auto;box-shadow:0 8px 24px var(--shadow)}
+.search-drop.open{display:block}
+.search-item{display:flex;align-items:center;gap:.85rem;padding:.7rem 2rem;border-bottom:1px solid var(--beige);cursor:pointer;transition:background .15s}
+.search-item:hover{background:var(--cream)}
+.search-thumb{width:42px;height:42px;background:var(--beige);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--tan);flex-shrink:0;overflow:hidden}
+.search-thumb img{width:100%;height:100%;object-fit:cover}
+.search-empty{padding:1.25rem 2rem;font-size:12px;color:var(--tan);font-style:italic}
+
+/* COTIZ BAR */
+.cotiz-bar{background:var(--dark);color:rgba(250,247,242,.6);padding:.5rem 2rem;font-size:11px;letter-spacing:.04em;display:none;align-items:center;gap:2rem;flex-wrap:wrap}
+.cotiz-bar strong{color:var(--gold)}
+.cotiz-bar button{background:none;border:1px solid rgba(255,255,255,.2);color:var(--white);padding:2px 10px;font-size:10px}
+
+/* SOCIAL PROOF */
+.social-proof{background:var(--dark);padding:.55rem 2rem;display:flex;align-items:center;justify-content:center;gap:1.75rem;flex-wrap:wrap}
+.sp-item{font-size:11px;color:rgba(250,247,242,.6);display:flex;align-items:center;gap:.35rem;white-space:nowrap}
+.sp-item strong{color:var(--gold);font-weight:600}
+.sp-dot{width:3px;height:3px;border-radius:50%;background:rgba(201,169,110,.35)}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;min-height:420px;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,var(--beige) 0%,var(--cream) 55%,#EDE5D5 100%)}
+.hero-carousel{position:absolute;inset:0;z-index:1}
+.hero-slide{position:absolute;inset:0;opacity:0;transition:opacity .7s;background-size:cover;background-position:center}
+.hero-slide.active{opacity:1}
+.hero-overlay{position:absolute;inset:0;background:rgba(44,36,22,.38);z-index:2;display:none}
+.hero-inner{position:relative;z-index:3;max-width:640px;padding:4rem 2rem}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;font-weight:500;animation:fadeUp .6s ease both}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:1;color:var(--dark);margin-bottom:1.1rem;text-transform:uppercase;animation:fadeUp .7s .15s ease both}
+.hero-desc{font-size:13px;color:var(--brown);line-height:1.75;margin-bottom:2rem;font-weight:300;animation:fadeUp .7s .3s ease both}
+.hero-dots{position:absolute;bottom:1.25rem;left:50%;transform:translateX(-50%);z-index:4;display:flex;gap:.4rem}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35);border:none;padding:0;transition:background .3s;cursor:pointer}
+.hero-dot.active{background:var(--gold)}
+
+/* BUTTONS */
+.btn-row{animation:fadeUp .7s .42s ease both}
+.btn-primary{background:var(--dark);color:var(--white);border:none;padding:12px 30px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;transition:all .2s;display:inline-block}
+.btn-primary:hover{background:var(--brown)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-outline{background:none;color:var(--dark);border:1px solid var(--tan);padding:11px 30px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;transition:all .2s;display:inline-block;margin-left:.75rem}
+.btn-outline:hover{border-color:var(--dark)}
+.btn-rec{background:linear-gradient(135deg,#D4B97E,var(--gold));color:var(--white);border:none;padding:12px 30px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;transition:all .25s;display:inline-block;margin-left:.75rem;box-shadow:0 4px 18px rgba(201,169,110,.4)}
+.btn-rec:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,169,110,.55)}
+
+/* CATEGORIES */
+.cats-section{background:var(--cream);padding:2.75rem 2rem}
+.cats-inner{max-width:1100px;margin:0 auto;display:grid;gap:1.25rem}
+.cat-card{background:var(--beige);padding:2.5rem 2rem;cursor:pointer;transition:all .2s;border:1px solid transparent;position:relative}
+.cat-card:hover{border-color:var(--gold)}
+.cat-arrow{position:absolute;bottom:1.25rem;right:1.25rem;font-size:16px;color:var(--tan);transition:all .2s}
+.cat-card:hover .cat-arrow{color:var(--gold);transform:translateX(4px)}
+.cat-label{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;font-weight:600}
+.cat-name{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--dark);letter-spacing:.04em;margin-bottom:.4rem}
+.cat-desc{font-size:12px;color:var(--brown);line-height:1.65;font-weight:300}
+
+/* OFFERS */
+.offers-band{background:var(--beige);padding:3rem 2rem}
+.offers-inner{max-width:1100px;margin:0 auto}
+.sec-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.75rem}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--dark);letter-spacing:.04em;margin-bottom:.2rem}
+.sec-sub{font-size:11px;color:var(--brown);letter-spacing:.06em;font-weight:300}
+.offers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.offer-card{background:var(--white);border:1px solid var(--tan);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;transition:all .2s;cursor:pointer}
+.offer-card:hover{border-color:var(--gold);box-shadow:0 4px 14px var(--shadow)}
+.offer-name{font-size:12px;font-weight:500;color:var(--dark);margin-bottom:3px}
+.offer-price{font-size:13px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.04em}
+.offer-disc{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);letter-spacing:.04em}
+
+/* PRODUCTS */
+.section{padding:3rem 2rem;max-width:1100px;margin:0 auto}
+.filters{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.filter-btn{background:none;border:1px solid var(--tan);padding:6px 14px;font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;color:var(--brown);transition:all .2s}
+.filter-btn.active,.filter-btn:hover{background:var(--dark);color:var(--white);border-color:var(--dark)}
+.sort-bar{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.sort-bar label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--brown);font-weight:600}
+.sort-select{border:1px solid var(--tan);padding:6px 10px;font-size:11px;background:var(--cream);color:var(--dark);outline:none;cursor:pointer;transition:border .2s}
+.sort-select:focus{border-color:var(--gold)}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1.25rem}
+.product-card{background:var(--white);border:1px solid var(--beige);overflow:hidden;transition:all .25s}
+.product-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px var(--shadow)}
+.product-card.no-stock{opacity:.55}
+.product-img{width:100%;height:200px;background:var(--beige);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--tan);position:relative;overflow:hidden;cursor:pointer;letter-spacing:.04em}
+.product-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.product-img .init{position:relative;z-index:1}
+.badge{position:absolute;z-index:2;font-size:9px;font-weight:600;padding:3px 7px;letter-spacing:.05em;font-family:'Montserrat',sans-serif}
+.badge-off{top:10px;left:10px;background:var(--dark);color:var(--white)}
+.badge-dec{top:10px;right:10px;background:var(--gold);color:var(--white)}
+.badge-last{top:10px;left:10px;background:#e65100;color:var(--white)}
+.badge-ns{bottom:0;left:0;right:0;text-align:center;background:rgba(44,36,22,.65);color:var(--white);padding:5px}
+.promo-tag{position:absolute;bottom:0;left:0;right:0;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:16px;font-weight:400;letter-spacing:.12em;padding:7px 8px;z-index:3;text-transform:uppercase;line-height:1;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.15)}
+.product-info{padding:.85rem 1rem .4rem}
+.product-brand{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:3px}
+.product-name{font-size:13px;font-weight:500;color:var(--dark);margin-bottom:7px;line-height:1.35;cursor:pointer}
+.product-name:hover{color:var(--gold)}
+.price-row{display:flex;align-items:baseline;gap:7px}
+.price-cur{font-size:15px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.04em}
+.price-old{font-size:11px;color:var(--tan);text-decoration:line-through}
+.product-footer{padding:.55rem 1rem .5rem;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--beige);margin-top:5px;gap:.4rem}
+.add-btn{background:none;border:1px solid var(--tan);padding:5px 10px;font-size:9px;letter-spacing:.07em;text-transform:uppercase;font-weight:500;color:var(--dark);transition:all .2s;white-space:nowrap}
+.add-btn:hover{background:var(--dark);color:var(--white);border-color:var(--dark)}
+.add-btn:disabled{opacity:.4;cursor:not-allowed}
+.wa-prod-btn{display:inline-flex;align-items:center;gap:.3rem;background:#25D366;color:#fff;border:none;padding:5px 9px;font-size:9px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;transition:all .2s;white-space:nowrap;text-decoration:none}
+.wa-prod-btn:hover{background:#1da851}
+.wa-prod-btn svg{width:11px;height:11px;fill:white;flex-shrink:0}
+.free-ship{font-size:9px;color:var(--green);font-weight:500;padding:.2rem 1rem .5rem;display:block}
+
+/* FAQ */
+.faq-outer{background:var(--beige);padding:3rem 2rem}
+.faq-inner{max-width:700px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--tan);padding:1.1rem 0;cursor:pointer}
+.faq-q{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:500;color:var(--dark)}
+.faq-icon{font-size:18px;color:var(--gold);transition:transform .25s;flex-shrink:0;margin-left:.75rem}
+.faq-a{font-size:12px;color:var(--brown);line-height:1.75;max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;font-weight:300}
+.faq-item.open .faq-a{max-height:200px;padding-top:.65rem}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+
+/* FOOTER */
+footer{background:var(--dark);padding:2.5rem 2rem;text-align:center}
+.footer-logo-img{height:36px;width:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:.85;margin-bottom:.35rem}
+.footer-logo-txt{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);letter-spacing:.06em;margin-bottom:.2rem}
+.footer-logo-sub{font-size:9px;letter-spacing:.24em;color:var(--gold);margin-bottom:1.4rem;font-weight:300}
+.footer-social{display:flex;justify-content:center;gap:.85rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.social-btn{display:flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:7px 16px;color:rgba(250,247,242,.8);font-size:10px;letter-spacing:.07em;text-transform:uppercase;font-weight:500;transition:all .2s}
+.social-btn:hover{background:rgba(255,255,255,.14);color:var(--white)}
+.social-btn svg{width:13px;height:13px;fill:currentColor}
+.footer-wa{display:flex;align-items:center;justify-content:center;gap:.4rem;color:var(--gold);font-size:11px;margin-bottom:1rem;font-weight:500;transition:opacity .2s}
+.footer-wa:hover{opacity:.8}
+.footer-copy{font-size:9px;color:rgba(250,247,242,.4);letter-spacing:.06em}
+
+/* CART */
+.cart-modal{position:fixed;inset:0;background:rgba(44,36,22,.5);z-index:200;display:none}
+.cart-modal.open{display:block}
+.cart-panel{position:absolute;top:0;right:0;bottom:0;width:340px;background:var(--white);padding:1.75rem;display:flex;flex-direction:column;gap:1rem;overflow-y:auto}
+.cart-hdr{display:flex;justify-content:space-between;align-items:center}
+.cart-hdr h2{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--dark);letter-spacing:.04em}
+.close-x{background:none;border:none;font-size:20px;color:var(--brown)}
+.cart-empty{text-align:center;color:var(--tan);font-size:13px;font-style:italic;padding:3rem 0}
+.cart-items-list{flex:1;overflow-y:auto}
+.cart-item{display:flex;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--beige);align-items:center}
+.cart-item-info{flex:1;min-width:0}
+.cart-item-name{font-size:12px;font-weight:500;color:var(--dark)}
+.cart-item-price{font-size:12px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.03em}
+.cart-item-old{font-size:10px;color:var(--tan);text-decoration:line-through}
+.cart-item-promo{font-size:9px;color:var(--green);font-weight:600;letter-spacing:.04em}
+.ci-rm{background:none;border:none;color:var(--tan);font-size:15px;padding:3px;transition:color .2s;flex-shrink:0}
+.ci-rm:hover{color:var(--red)}
+/* coupon */
+.coupon-section{padding:.85rem 0;border-bottom:1px solid var(--beige)}
+.coupon-row{display:flex;gap:.5rem}
+.coupon-input{flex:1;border:1px solid var(--tan);padding:8px 10px;font-size:11px;background:var(--cream);color:var(--dark);outline:none;transition:border .2s;text-transform:uppercase}
+.coupon-input:focus{border-color:var(--gold)}
+.coupon-apply-btn{background:var(--dark);color:var(--white);border:none;padding:8px 14px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;white-space:nowrap;transition:background .2s}
+.coupon-apply-btn:hover{background:var(--brown)}
+.coupon-msg{font-size:11px;margin-top:.4rem;padding:.35rem .6rem;font-weight:500;display:none}
+.coupon-ok{color:var(--green);background:#e8f5e9;display:block}
+.coupon-err{color:var(--red);background:#fce4ec;display:block}
+/* totals */
+.cart-totals{border-top:1px solid var(--beige);padding-top:.85rem}
+.total-row{display:flex;justify-content:space-between;font-size:12px;color:var(--brown);margin-bottom:.3rem}
+.total-row.main{font-size:14px;font-weight:700;color:var(--dark);border-top:2px solid var(--dark);padding-top:.65rem;margin-top:.5rem}
+.total-row.disc{color:var(--green);font-weight:600}
+.checkout-btn{background:var(--dark);color:var(--white);border:none;width:100%;padding:13px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-top:.85rem;transition:background .2s}
+.checkout-btn:hover{background:var(--brown)}
+.wa-note{font-size:10px;color:var(--brown);text-align:center;line-height:1.5;margin-top:.5rem;font-weight:300}
+
+/* DETAIL MODAL */
+.detail-modal{position:fixed;inset:0;background:rgba(44,36,22,.6);z-index:250;display:none;align-items:center;justify-content:center;padding:1rem}
+.detail-modal.open{display:flex}
+.detail-box{background:var(--white);width:100%;max-width:700px;max-height:92vh;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;position:relative}
+.detail-img{background:var(--beige);min-height:300px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--tan);position:relative;overflow:hidden;letter-spacing:.04em}
+.detail-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.detail-img .init{position:relative;z-index:1}
+.detail-close{position:absolute;top:.75rem;right:.75rem;background:var(--white);border:none;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--brown);box-shadow:0 2px 8px var(--shadow);z-index:10}
+.detail-info{padding:2rem 1.75rem;display:flex;flex-direction:column;gap:.75rem}
+.detail-brand{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.detail-name{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--dark);letter-spacing:.04em;line-height:1.1}
+.detail-price-row{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap}
+.detail-price{font-size:20px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.04em}
+.detail-old{font-size:13px;color:var(--tan);text-decoration:line-through}
+.detail-disc-badge{background:var(--dark);color:var(--white);font-size:9px;font-weight:600;padding:2px 7px;letter-spacing:.06em}
+.detail-promo-badge{font-size:10px;font-weight:700;padding:3px 10px;letter-spacing:.07em;text-transform:uppercase;color:#fff;display:inline-block}
+.detail-stock{font-size:11px;font-weight:500}
+.detail-stock.ok{color:var(--green)}.detail-stock.low{color:#e65100}.detail-stock.out{color:var(--red)}
+.detail-notes{border-top:1px solid var(--beige);padding-top:.75rem}
+.detail-notes-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);margin-bottom:.3rem;display:block}
+.detail-notes-txt{font-size:11px;color:var(--brown);line-height:1.7;font-weight:300}
+.detail-social{font-size:10px;color:var(--brown);font-weight:300}
+.detail-actions{display:flex;flex-direction:column;gap:.5rem;margin-top:auto;padding-top:.75rem}
+
+/* RECOMMENDER */
+.rec-hero{background:linear-gradient(135deg,var(--beige),var(--cream));padding:3.5rem 2rem 2.5rem;text-align:center}
+.rec-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;font-weight:500}
+.rec-title{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--dark);letter-spacing:.04em;margin-bottom:.5rem}
+.rec-subtitle{font-size:12px;color:var(--brown);line-height:1.7;max-width:460px;margin:0 auto;font-weight:300}
+.rec-body{max-width:600px;margin:0 auto;padding:2.5rem 2rem}
+.rec-progress{display:flex;gap:.5rem;justify-content:center;margin-bottom:2rem}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:var(--tan);border:none;padding:0;transition:background .3s}
+.rec-dot.done{background:var(--gold)}.rec-dot.active{background:var(--dark)}
+.rec-step{background:var(--white);border:1px solid var(--beige);padding:2rem}
+.rec-step h3{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--dark);letter-spacing:.04em;margin-bottom:1.4rem}
+.rec-options{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.rec-opt{background:none;border:1px solid var(--tan);padding:10px 12px;font-size:11px;letter-spacing:.04em;color:var(--dark);transition:all .2s;text-align:left;line-height:1.4;font-weight:400}
+.rec-opt:hover,.rec-opt.sel{background:var(--dark);color:var(--white);border-color:var(--dark)}
+.rec-result{background:var(--white);border:2px solid var(--gold);padding:2.5rem;text-align:center}
+.rec-result-lbl{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;font-weight:500}
+.rec-result-title{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--dark);letter-spacing:.04em;margin-bottom:.3rem}
+.rec-result-brand{font-size:10px;color:var(--brown);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.1rem;font-weight:500}
+.rec-result-why{font-size:12px;color:var(--brown);line-height:1.75;margin-bottom:1.4rem;font-style:italic;font-weight:300}
+.rec-result-price{font-size:22px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.04em;margin-bottom:1.5rem}
+.rec-loading{text-align:center;padding:3rem;font-size:14px;color:var(--brown);font-style:italic;font-weight:300}
+
+/* LOGIN */
+.login-outer{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 68px);padding:2rem;background:var(--cream)}
+.login-box{background:var(--white);border:1px solid var(--beige);padding:3rem;width:100%;max-width:400px}
+.login-box h2{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--dark);letter-spacing:.04em;margin-bottom:.3rem}
+.login-box p{font-size:11px;color:var(--brown);margin-bottom:2rem;font-weight:300}
+.login-err{font-size:11px;color:var(--red);margin-top:.4rem;display:none}
+.login-err.show{display:block}
+
+/* ADMIN GENERAL */
+.admin-outer{max-width:1200px;margin:0 auto;padding:2rem}
+.admin-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.admin-topbar h2{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--dark);letter-spacing:.04em}
+.admin-topbar p{font-size:11px;color:var(--brown);font-weight:300;margin-top:.15rem}
+.admin-tabs{display:flex;border-bottom:2px solid var(--beige);margin-bottom:2rem;flex-wrap:wrap}
+.admin-tab{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:10px 16px;font-size:10px;letter-spacing:.07em;text-transform:uppercase;font-weight:500;color:var(--brown);transition:all .2s}
+.admin-tab.active{color:var(--dark);border-bottom-color:var(--gold);font-weight:700}
+.admin-tab:hover{color:var(--dark)}
+.admin-sec{display:none}.admin-sec.active{display:block}
+.admin-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem}
+.admin-hdr h3{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--dark);letter-spacing:.04em}
+
+/* FORMS */
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--brown);margin-bottom:.4rem;font-weight:600}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid var(--tan);padding:9px 11px;font-size:12px;background:var(--cream);color:var(--dark);outline:none;transition:border .2s;font-family:'Montserrat',sans-serif}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.input-pfx{position:relative;display:flex;align-items:center}
+.input-pfx span{position:absolute;left:10px;font-size:12px;color:var(--brown);pointer-events:none;z-index:1}
+.input-pfx input{padding-left:20px}
+.form-check{display:flex;align-items:center;gap:.6rem;cursor:pointer;font-size:12px;margin-bottom:1rem}
+.form-check input{width:auto;accent-color:var(--gold)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--white);border:1px solid var(--beige);padding:1.25rem}
+.stat-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--brown);margin-bottom:.4rem;font-weight:600}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--dark);letter-spacing:.04em}
+.stat-sub{font-size:10px;color:var(--tan);margin-top:.2rem}
+.stat-green{color:var(--green)}.stat-red{color:var(--red)}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+.admin-table{width:100%;border-collapse:collapse;font-size:12px}
+.admin-table th{text-align:left;padding:8px 10px;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--brown);border-bottom:2px solid var(--beige);font-weight:700;white-space:nowrap}
+.admin-table td{padding:8px 10px;border-bottom:1px solid var(--beige);vertical-align:middle;color:var(--dark)}
+.admin-table tr:hover td{background:var(--cream)}
+.tbl-name{font-weight:600;font-size:12px}
+.tbl-sub{font-size:10px;color:var(--brown);font-weight:300;margin-top:1px}
+.stock-badge{display:inline-block;padding:2px 7px;font-size:9px;border-radius:2px;font-weight:600}
+.sok{background:#e8f5e9;color:#2d6a4f}.slow{background:#fff3e0;color:#e65100}.sout{background:#fce4ec;color:#c62828}
+.tbl-actions{display:flex;gap:.35rem;flex-wrap:wrap}
+.tbl-btn{background:none;border:1px solid var(--tan);padding:3px 9px;font-size:9px;letter-spacing:.05em;text-transform:uppercase;font-weight:500;color:var(--dark);transition:all .2s;white-space:nowrap}
+.tbl-btn:hover{background:var(--dark);color:var(--white);border-color:var(--dark)}
+.tbl-btn.danger{border-color:#f5c6c6;color:var(--red)}
+.tbl-btn.danger:hover{background:var(--red);color:var(--white);border-color:var(--red)}
+.profit-pos{color:var(--green);font-weight:600}.profit-neg{color:var(--red);font-weight:600}
+
+/* CALC BOX */
+.price-calc{background:var(--beige);border:1px solid var(--tan);padding:1rem 1.4rem;display:none;gap:2rem;align-items:center;flex-wrap:wrap;margin-top:1rem}
+.price-calc.show{display:flex}
+.calc-item{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--brown);font-weight:600}
+.calc-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--dark);display:block;margin-top:2px;letter-spacing:.04em}
+.calc-val.green{color:var(--green)}
+
+/* EDITOR PANELS */
+.editor-panel{background:var(--white);border:1px solid var(--beige);padding:1.75rem;margin-bottom:1.25rem}
+.editor-panel h4{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--dark);letter-spacing:.04em;margin-bottom:1rem}
+.font-btn{padding:8px 12px;border:1px solid var(--tan);background:none;text-align:left;width:100%;transition:all .2s;margin-bottom:.4rem}
+.font-btn:hover,.font-btn.active{border-color:var(--gold);background:var(--beige)}
+
+/* TOGGLE SWITCH */
+.sw-wrap{display:flex;align-items:center;gap:.5rem;cursor:pointer}
+.sw-track{width:36px;height:20px;border-radius:10px;background:var(--tan);position:relative;transition:background .3s;flex-shrink:0}
+.sw-track.on{background:var(--gold)}
+.sw-thumb{width:16px;height:16px;border-radius:50%;background:var(--white);position:absolute;top:2px;left:2px;transition:transform .3s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw-track.on .sw-thumb{transform:translateX(16px)}
+
+/* PROMO ADMIN */
+.promo-card-new{background:var(--white);border:1px solid var(--beige);padding:1rem 1.1rem;margin-bottom:.5rem}
+.coupon-card{background:var(--white);border:1px solid var(--beige);padding:1rem 1.1rem;margin-bottom:.5rem}
+.coupon-code-chip{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.1em;color:var(--dark);background:var(--beige);border:1.5px dashed var(--tan);padding:3px 10px;display:inline-block;margin-bottom:.35rem}
+.uses-bar{height:4px;background:var(--beige);border-radius:2px;margin-top:.35rem;overflow:hidden}
+.uses-bar-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .3s}
+.promo-status-badge{padding:2px 8px;font-size:9px;letter-spacing:.06em;border-radius:2px;font-weight:600}
+.status-active{background:#e8f5e9;color:#2d6a4f}
+.status-paused{background:#f5f5f5;color:var(--brown)}
+.status-expired{background:#fce4ec;color:var(--red)}
+
+/* SECTIONS DRAG */
+.sec-drag-item{background:var(--white);border:1px solid var(--beige);padding:.9rem 1.1rem;margin-bottom:.45rem;display:flex;align-items:center;gap:1rem;user-select:none;transition:all .2s}
+.sec-drag-item.drag-over{border-color:var(--gold);border-style:dashed}
+.sec-drag-item.dragging{opacity:.45}
+.drag-handle{font-size:16px;color:var(--tan);cursor:grab;flex-shrink:0}
+.drag-handle:active{cursor:grabbing}
+
+/* OTHER ADMIN ITEMS */
+.list-item{background:var(--white);border:1px solid var(--beige);padding:.8rem 1rem;margin-bottom:.45rem;display:flex;align-items:flex-start;gap:.75rem}
+.carousel-item{background:var(--white);border:1px solid var(--beige);padding:.7rem 1rem;margin-bottom:.45rem;display:flex;align-items:center;gap:.75rem}
+.carousel-item img{width:56px;height:36px;object-fit:cover;border:1px solid var(--tan);flex-shrink:0}
+.rec-q-item{background:var(--white);border:1px solid var(--beige);padding:1rem 1.1rem;margin-bottom:.6rem}
+.rec-opt-tag{display:inline-flex;align-items:center;gap:.3rem;background:var(--beige);border:1px solid var(--tan);padding:3px 9px;font-size:10px;color:var(--dark);margin:.2rem .2rem 0 0}
+
+/* SHEETS */
+.sheets-status{font-size:12px;padding:.7rem 1rem;margin-top:.75rem;border-radius:2px;display:none}
+.s-ok{background:#e8f5e9;color:#2d6a4f;display:block}
+.s-err{background:#fce4ec;color:#c62828;display:block}
+.s-loading{background:#fff3e0;color:#e65100;display:block}
+
+/* MODALS */
+.modal-bg{position:fixed;inset:0;background:rgba(44,36,22,.55);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--white);padding:2rem;width:100%;max-width:500px;max-height:92vh;overflow-y:auto}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.modal-hdr h3{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--dark);letter-spacing:.04em}
+
+/* FLOATS */
+.float-group{position:fixed;bottom:2rem;right:2rem;z-index:150;display:flex;flex-direction:column;gap:.6rem;align-items:center}
+.float-btn{border-radius:50%;width:50px;height:50px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.2);transition:transform .2s;text-decoration:none;border:none}
+.float-btn:hover{transform:scale(1.08)}
+.float-wa{background:#25D366;box-shadow:0 4px 14px rgba(37,211,102,.35)}
+.float-tt{background:#000}
+.float-btn svg{width:23px;height:23px;fill:white}
+.back-top{position:fixed;bottom:2rem;left:2rem;z-index:150;background:var(--white);border:1px solid var(--tan);width:42px;height:42px;display:flex;align-items:center;justify-content:center;transition:all .25s;opacity:0;pointer-events:none;box-shadow:0 2px 10px var(--shadow)}
+.back-top.visible{opacity:1;pointer-events:all}
+.back-top:hover{background:var(--dark);border-color:var(--dark)}
+.back-top:hover svg{stroke:var(--white)}
+.back-top svg{width:16px;height:16px;stroke:var(--dark);fill:none;stroke-width:2.5;stroke-linecap:round}
+
+/* TOAST */
+.toast{position:fixed;bottom:6.5rem;right:2rem;background:var(--dark);color:var(--white);padding:10px 16px;font-size:11px;letter-spacing:.04em;z-index:400;opacity:0;transform:translateY(12px);transition:all .3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* PROMO BANNER */
+.promo-banner{background:var(--gold);color:var(--white);text-align:center;padding:.5rem 2rem;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;position:relative;z-index:101;display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap}
+.banner-close{background:none;border:none;color:var(--white);font-size:16px;cursor:pointer;padding:0;line-height:1;opacity:.7;transition:opacity .2s;position:absolute;right:1rem}
+.banner-close:hover{opacity:1}
+
+/* DARK MODE */
+body.dark-mode{--cream:#181412;--beige:#221E1A;--tan:#3A3028;--brown:#C9A96E;--dark:#FAF7F2;--gold:#D4B97E;--white:#2C2416;--shadow:rgba(0,0,0,0.35)}
+body.dark-mode .search-drop{background:#221E1A}
+.dark-toggle{background:none;border:1px solid var(--tan);width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all .2s;color:var(--dark)}
+.dark-toggle:hover{background:var(--dark);color:var(--white);border-color:var(--dark)}
+
+/* SCROLL ANIMATIONS */
+.fade-in{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* SKELETON */
+.skeleton{background:linear-gradient(90deg,var(--beige) 25%,var(--tan) 50%,var(--beige) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-card{background:var(--white);border:1px solid var(--beige);overflow:hidden}
+.skel-img{height:200px}.skel-line{height:11px;margin:8px 12px;border-radius:2px}.skel-line.s{width:55%}.skel-line.m{width:75%}
+
+/* RECENTLY VIEWED */
+.recently-section{padding:2.5rem 2rem;border-top:1px solid var(--beige)}
+.recently-inner{max-width:1100px;margin:0 auto}
+
+/* QTY SELECTOR IN CART */
+.qty-wrap{display:flex;align-items:center}
+.qty-btn{background:none;border:1px solid var(--tan);width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--dark);transition:all .2s;padding:0;line-height:1;cursor:pointer}
+.qty-btn:hover{background:var(--dark);color:var(--white);border-color:var(--dark)}
+.qty-num{border:none;border-top:1px solid var(--tan);border-bottom:1px solid var(--tan);width:30px;height:24px;text-align:center;font-size:11px;font-weight:600;color:var(--dark);background:var(--cream);font-family:'Montserrat',sans-serif;outline:none}
+
+/* SHARE BTN */
+.share-btn{display:inline-flex;align-items:center;gap:.3rem;background:none;border:1px solid var(--tan);padding:5px 10px;font-size:9px;letter-spacing:.07em;text-transform:uppercase;font-weight:500;color:var(--brown);transition:all .2s;cursor:pointer}
+.share-btn:hover{border-color:var(--dark);color:var(--dark)}
+
+/* ABOUT/POLICY PAGE */
+.info-page{max-width:800px;margin:0 auto;padding:3rem 2rem}
+.info-page h2{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--dark);letter-spacing:.04em;margin-bottom:.4rem}
+.info-page .page-sub{font-size:13px;color:var(--brown);margin-bottom:2.5rem;font-weight:300}
+.info-page h3{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--dark);letter-spacing:.04em;margin-bottom:.65rem;margin-top:2rem}
+.info-page p{font-size:13px;color:var(--brown);line-height:1.85;font-weight:300;margin-bottom:.65rem}
+.info-page ul{list-style:none;padding:0;margin-bottom:.65rem}
+.info-page ul li{font-size:13px;color:var(--brown);line-height:1.85;font-weight:300;padding-left:1.25rem;position:relative;margin-bottom:.25rem}
+.info-page ul li::before{content:'✦';position:absolute;left:0;color:var(--gold);font-size:9px;top:.35rem}
+
+/* ANALYTICS CHART */
+.chart-bar-wrap{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.chart-bar-label{font-size:11px;font-weight:500;color:var(--dark);width:180px;min-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+.chart-bar-track{flex:1;background:var(--beige);height:22px;position:relative;border-radius:2px;overflow:hidden}
+.chart-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),#D4B97E);border-radius:2px;transition:width .6s ease;position:relative}
+.chart-bar-fill.cart-bar{background:linear-gradient(90deg,var(--green),#3a8c61)}
+.chart-bar-val{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:700;color:var(--white);letter-spacing:.04em}
+.chart-bar-val.outside{position:static;transform:none;color:var(--brown);font-size:10px;font-weight:600;min-width:28px}
+.conv-badge{display:inline-block;padding:1px 7px;font-size:9px;font-weight:700;border-radius:2px;letter-spacing:.04em}
+.conv-high{background:#e8f5e9;color:#2d6a4f}
+.conv-med{background:#fff3e0;color:#e65100}
+.conv-low{background:#f5f5f5;color:var(--brown)}
+
+/* INT NOTE TAG */
+.int-note{font-size:10px;color:var(--brown);font-style:italic;margin-top:2px}
+
+/* STOCK URGENT */
+.stock-urgent{font-size:10px;font-weight:700;color:#e65100;letter-spacing:.06em;text-transform:uppercase;padding:.15rem 1rem .4rem;display:block}
+
+@media(max-width:768px){
+  .nav-links,.nav-search-wrap{display:none}
+  .hero-title{font-size:48px}
+  .cats-inner,.detail-box{grid-template-columns:1fr}
+  .stats-grid,.form-row,.form-row-3{grid-template-columns:1fr 1fr}
+  .rec-options{grid-template-columns:1fr}
+  .admin-outer{padding:1rem}
+  .social-proof{gap:1rem}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="cotiz-bar" id="cotiz-bar">
+  USD Blue: <strong id="cotiz-val">cargando...</strong>&nbsp;|&nbsp;Usando: <strong id="cotiz-used">—</strong>
+  &nbsp;<button onclick="updateCotiz()">Actualizar</button>
+</div>
+
+<div class="promo-banner" id="promo-banner">
+  <span>🚀 Envío gratis en todos los pedidos · Perfumes 100% originales</span>
+  <button class="banner-close" onclick="document.getElementById('promo-banner').style.display='none'" title="Cerrar">✕</button>
+</div>
+
+<nav>
+  <div class="nav-logo" onclick="goHome()">
+    <img id="nav-logo-img" src="https://dcdn-us.mitiendanube.com/stores/001/706/233/themes/common/logo-958843838-1744833240-707e3e6f5cd32fcbf4242f64ee7859fd1744833240-480-0.webp" alt="Elua Shop" onerror="this.style.display='none';document.getElementById('nav-logo-fallback').style.display='flex'">
+    <div class="nav-logo-fallback" id="nav-logo-fallback"><span class="nav-logo-main">elua shop</span><span class="nav-logo-sub">p e r f u m e s</span></div>
+  </div>
+  <ul class="nav-links" id="nav-links-list"></ul>
+  <div class="nav-right">
+    <div class="nav-search-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      <input type="text" id="nav-search-input" placeholder="Buscar perfume..." oninput="doSearch(this.value)" onfocus="openSearch()" onblur="setTimeout(closeSearch,200)">
+    </div>
+    <button class="cart-btn" onclick="toggleCart()">Carrito <span class="cart-count" id="cart-count">0</span></button>
+    <span class="admin-link" onclick="showView('login')">Admin</span>
+  </div>
+</nav>
+<div class="search-drop" id="search-drop"></div>
+
+<!-- ══ VIEW: TIENDA ══ -->
+<div class="view active" id="view-home">
+
+  <section class="hero" id="hero-section">
+    <div class="hero-carousel" id="hero-carousel"></div>
+    <div class="hero-overlay" id="hero-overlay"></div>
+    <div class="hero-inner">
+      <p class="hero-label" id="hero-label-el">Perfumería Oriental · Buenos Aires</p>
+      <h1 class="hero-title" id="hero-title-el">El arte árabe del perfume</h1>
+      <p class="hero-desc" id="hero-desc-el">Descubrí fragancias únicas de Medio Oriente. Lattafa, Armaf, Rasasi y más.</p>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="scrollSec('sec-productos')">Ver colección</button>
+        <button class="btn-rec" onclick="showView('rec')">✨ TEST PARA ENCONTRAR TU PERFUME IDEAL</button>
+      </div>
+    </div>
+    <div class="hero-dots" id="hero-dots"></div>
+  </section>
+
+  <div class="social-proof" id="social-proof-bar">
+    <div class="sp-item"><strong id="sp-count">28</strong> fragancias en stock</div>
+    <div class="sp-dot"></div>
+    <div class="sp-item">🚀 Envío a todo el país</div>
+    <div class="sp-dot"></div>
+    <div class="sp-item"><strong>+340</strong> pedidos realizados</div>
+    <div class="sp-dot"></div>
+    <div class="sp-item">⭐ Perfumes 100% originales</div>
+  </div>
+
+  <div class="cats-section" id="sec-cats">
+    <div class="cats-inner" id="cats-grid"></div>
+  </div>
+
+  <div class="offers-band" id="sec-ofertas">
+    <div class="offers-inner">
+      <div class="sec-header"><div><h2 class="sec-title" id="ofertas-title">Ofertas especiales</h2><p class="sec-sub" id="ofertas-sub">Descuentos por tiempo limitado</p></div></div>
+      <div class="offers-grid" id="offers-grid"></div>
+    </div>
+  </div>
+
+  <div class="section" id="sec-productos">
+    <div class="sec-header"><div><h2 class="sec-title" id="coleccion-title">Nuestra colección</h2><p class="sec-sub" id="coleccion-sub">Todas las fragancias disponibles</p></div></div>
+    <div class="filters" id="home-filters"></div>
+    <div class="sort-bar">
+      <label>Ordenar por</label>
+      <select class="sort-select" id="sort-select" onchange="renderProducts(currentFilter)">
+        <option value="default">Destacados</option>
+        <option value="price-asc">Precio: menor a mayor</option>
+        <option value="price-desc">Precio: mayor a menor</option>
+        <option value="name-asc">Nombre A → Z</option>
+        <option value="name-desc">Nombre Z → A</option>
+        <option value="stock-desc">Mayor stock</option>
+      </select>
+    </div>
+    <div class="products-grid" id="products-grid"></div>
+  </div>
+
+  <div class="faq-outer" id="sec-faq">
+    <div class="faq-inner">
+      <h2 class="sec-title" id="faq-sec-title" style="text-align:center;margin-bottom:.3rem">Preguntas frecuentes</h2>
+      <p class="sec-sub" id="faq-sec-sub" style="text-align:center;margin-bottom:2rem">Todo lo que necesitás saber</p>
+      <div id="faqs-home"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="margin-bottom:1.25rem">
+      <img class="footer-logo-img" src="https://dcdn-us.mitiendanube.com/stores/001/706/233/themes/common/logo-958843838-1744833240-707e3e6f5cd32fcbf4242f64ee7859fd1744833240-480-0.webp" alt="Elua Shop" onerror="this.style.display='none';document.getElementById('footer-logo-fallback').style.display='block'">
+      <div id="footer-logo-fallback" style="display:none"><div class="footer-logo-txt">elua shop</div><div class="footer-logo-sub">p e r f u m e s</div></div>
+    </div>
+    <div class="footer-social">
+      <a class="social-btn" id="footer-ig" href="#" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>Instagram</a>
+      <a class="social-btn" id="footer-tt" href="#" target="_blank"><svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>TikTok</a>
+    </div>
+    <a class="footer-wa" href="https://wa.me/5492236870184" target="_blank"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>+54 9 223 687-0184</a>
+    <p class="footer-copy">© 2026 Elua Shop · Mar del Plata, Argentina</p>
+  </footer>
+</div>
+
+<!-- ══ VIEW: RECOMENDADOR ══ -->
+<div class="view" id="view-rec">
+  <div class="rec-hero">
+    <p class="rec-label">Inteligencia Artificial · Elua Shop</p>
+    <h2 class="rec-title">ENCONTRÁ TU PERFUME IDEAL</h2>
+    <p class="rec-subtitle" id="rec-intro-txt">Respondé las preguntas y nuestra IA te recomienda la fragancia perfecta de nuestro catálogo en stock.</p>
+  </div>
+  <div class="rec-body">
+    <div class="rec-progress" id="rec-dots"></div>
+    <div id="rec-content"></div>
+    <div style="margin-top:1.5rem"><button class="btn-outline" style="margin-left:0;font-size:10px" onclick="goHome()">← Volver a la tienda</button></div>
+  </div>
+</div>
+
+<!-- ══ VIEW: LOGIN ══ -->
+<div class="view" id="view-login">
+  <div class="login-outer">
+    <div class="login-box">
+      <h2>ADMINISTRACIÓN</h2>
+      <p>Acceso exclusivo · Elua Shop</p>
+      <div class="form-group"><label>Usuario</label><input type="text" id="login-user" autocomplete="username"></div>
+      <div class="form-group"><label>Contraseña</label><input type="password" id="login-pass" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <p class="login-err" id="login-err">Usuario o contraseña incorrectos</p>
+      <button class="btn-primary" style="width:100%;margin-top:.75rem" onclick="doLogin()">Ingresar</button>
+      <button class="btn-outline" style="width:100%;margin-top:.75rem;margin-left:0;text-align:center" onclick="goHome()">← Volver</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VIEW: ADMIN ══ -->
+<div class="view" id="view-admin">
+  <div class="admin-outer">
+    <div class="admin-topbar">
+      <div><h2>PANEL ADMIN</h2><p>Elua Shop · Vista interna</p></div>
+      <button class="btn-outline" style="margin-left:0" onclick="logout()">Cerrar sesión</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('resumen',this)">Resumen</button>
+      <button class="admin-tab" onclick="switchTab('analytics',this)">📊 Analytics</button>
+      <button class="admin-tab" onclick="switchTab('productos',this)">Productos</button>
+      <button class="admin-tab" onclick="switchTab('nuevo',this)">+ Agregar</button>
+      <button class="admin-tab" onclick="switchTab('sheets',this)">Google Sheets</button>
+      <button class="admin-tab" onclick="switchTab('promos',this)">Promociones</button>
+      <button class="admin-tab" onclick="switchTab('cupones',this)">Cupones</button>
+      <button class="admin-tab" onclick="switchTab('editor',this)">Editor sitio</button>
+      <button class="admin-tab" onclick="switchTab('secciones',this)">Secciones</button>
+      <button class="admin-tab" onclick="switchTab('carrusel',this)">Carrusel</button>
+      <button class="admin-tab" onclick="switchTab('recomendador',this)">Recomendador</button>
+      <button class="admin-tab" onclick="switchTab('faqs',this)">FAQ</button>
+      <button class="admin-tab" onclick="switchTab('cats',this)">Categorías</button>
+    </div>
+
+    <!-- RESUMEN -->
+    <div class="admin-sec active" id="tab-resumen">
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="admin-hdr"><h3>Bajo stock (0–2 unidades)</h3></div>
+      <div id="low-stock-list"></div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="admin-sec" id="tab-analytics">
+      <div class="admin-hdr">
+        <h3>Analytics de productos</h3>
+        <button class="tbl-btn" onclick="resetAnalytics()">Resetear datos</button>
+      </div>
+      <p style="font-size:12px;color:var(--brown);font-weight:300;margin-bottom:1.5rem">Los clicks y agregados al carrito se registran automáticamente desde que abrís la tienda.</p>
+
+      <!-- STATS SUMMARY -->
+      <div class="stats-grid" id="analytics-stats" style="margin-bottom:2rem"></div>
+
+      <!-- CHART CLICKS -->
+      <div style="background:var(--white);border:1px solid var(--beige);padding:1.75rem;margin-bottom:1.5rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
+          <h4 style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--dark);letter-spacing:.04em">Top 10 · Clicks en productos</h4>
+          <select id="analytics-filter" onchange="renderAnalytics()" style="border:1px solid var(--tan);padding:6px 10px;font-size:11px;background:var(--cream);color:var(--dark);outline:none;font-family:'Montserrat',sans-serif">
+            <option value="clicks">Por clicks</option>
+            <option value="cart">Por agregados al carrito</option>
+          </select>
+        </div>
+        <div id="analytics-chart"></div>
+      </div>
+
+      <!-- FULL TABLE -->
+      <div style="background:var(--white);border:1px solid var(--beige);padding:1.75rem">
+        <h4 style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--dark);letter-spacing:.04em;margin-bottom:1.25rem">Tabla completa</h4>
+        <div class="tbl-wrap">
+          <table class="admin-table" id="analytics-table">
+            <thead><tr><th>#</th><th>Producto</th><th>Clicks</th><th>Agregados al carrito</th><th>Conversión</th><th>Último click</th></tr></thead>
+            <tbody id="analytics-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTOS -->
+    <div class="admin-sec" id="tab-productos">
+      <div class="admin-hdr">
+        <h3>Catálogo</h3>
+        <input id="search-admin" oninput="renderAdminTable()" placeholder="Buscar..." style="border:1px solid var(--tan);padding:7px 11px;font-size:11px;background:var(--cream);color:var(--dark);outline:none;width:190px;font-family:'Montserrat',sans-serif">
+      </div>
+      <div class="tbl-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Producto</th><th>Cat.</th><th>Stock</th><th>Costo USD</th><th>Venta ARS</th><th>Costo ARS</th><th>Ganancia</th><th>Margen</th><th>Envío</th><th>Acciones</th></tr></thead>
+          <tbody id="admin-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- NUEVO PRODUCTO -->
+    <div class="admin-sec" id="tab-nuevo">
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.04em;color:var(--dark);margin-bottom:1.5rem">Agregar producto</h3>
+      <div style="background:var(--white);border:1px solid var(--beige);padding:2rem">
+        <div class="form-row" style="margin-bottom:1rem">
+          <div class="form-group" style="margin:0"><label>Nombre</label><input type="text" id="np-name" placeholder="Ej: Lattafa Yara"></div>
+          <div class="form-group" style="margin:0"><label>Marca</label><input type="text" id="np-brand" placeholder="Ej: Lattafa"></div>
+        </div>
+        <div class="form-row" style="margin-bottom:1rem">
+          <div class="form-group" style="margin:0"><label>Categoría</label><select id="np-cat"></select></div>
+          <div class="form-group" style="margin:0"><label>Stock</label><input type="number" id="np-stock" value="10" min="0"></div>
+        </div>
+        <div class="form-row-3" style="margin-bottom:1rem">
+          <div class="form-group" style="margin:0"><label>Costo USD</label><div class="input-pfx"><span>$</span><input type="number" id="np-cost-usd" placeholder="0.00" oninput="calcNew()" step="0.01"></div></div>
+          <div class="form-group" style="margin:0"><label>Precio ARS</label><div class="input-pfx"><span>$</span><input type="number" id="np-price" placeholder="0" oninput="calcNew()"></div></div>
+          <div class="form-group" style="margin:0"><label>Precio anterior ARS</label><div class="input-pfx"><span>$</span><input type="number" id="np-old-price" placeholder="0"></div></div>
+        </div>
+        <div class="form-row" style="margin-bottom:1rem">
+          <div class="form-group" style="margin:0"><label>URL imagen</label><input type="text" id="np-img" placeholder="https://..."></div>
+          <div class="form-group" style="margin:0"><label>Notas olfativas (IA)</label><input type="text" id="np-notes" placeholder="floral, dulce, amaderado..."></div>
+        </div>
+        <label class="form-check"><input type="checkbox" id="np-freeship" checked> Envío gratis</label>
+        <div class="price-calc" id="np-calc">
+          <div class="calc-item">Costo ARS<span class="calc-val" id="nc-cost-ars">—</span></div>
+          <div class="calc-item">Ganancia<span class="calc-val green" id="nc-profit">—</span></div>
+          <div class="calc-item">Margen<span class="calc-val green" id="nc-margin">—</span></div>
+          <div class="calc-item">Gan. USD<span class="calc-val" id="nc-profit-usd">—</span></div>
+        </div>
+        <button class="btn-primary" style="margin-top:1.5rem" onclick="addNewProduct()">+ Agregar al catálogo</button>
+      </div>
+    </div>
+
+    <!-- SHEETS -->
+    <div class="admin-sec" id="tab-sheets">
+      <div class="admin-hdr"><h3>Google Sheets</h3></div>
+      <div style="background:var(--white);border:1px solid var(--beige);padding:2rem">
+        <p style="font-size:12px;color:var(--brown);line-height:1.75;margin-bottom:1.5rem;font-weight:300">
+          Publicá tu hoja como CSV (<em>Archivo → Compartir → Publicar en la web → CSV</em>) y pegá la URL acá.<br><br>
+          <strong style="font-weight:600;color:var(--dark)">Columnas (en orden):</strong> A: Nombre · B: Marca · C: Categoría · D: Stock · E: Costo USD · F: Precio ARS · G: Precio anterior · H: URL imagen · I: Notas · J: Envío gratis (si/no)
+        </p>
+        <div class="form-group"><label>URL pública CSV</label><input type="text" id="sheets-url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv"></div>
+        <div style="display:flex;gap:.65rem;flex-wrap:wrap">
+          <button class="btn-primary" style="font-size:10px;padding:9px 22px" onclick="importSheets(false)">Vista previa</button>
+          <button class="btn-outline" style="margin-left:0;font-size:10px;padding:8px 20px" onclick="importSheets(true)">Importar ahora</button>
+        </div>
+        <div id="sheets-status"></div>
+        <div id="sheets-preview" style="margin-top:1.5rem"></div>
+      </div>
+    </div>
+
+    <!-- PROMOS -->
+    <div class="admin-sec" id="tab-promos">
+      <div class="admin-hdr">
+        <h3>Descuentos</h3>
+        <button class="btn-primary" style="font-size:10px;padding:8px 14px" onclick="openPromoModal()">+ Nuevo descuento</button>
+      </div>
+      <p style="font-size:12px;color:var(--brown);font-weight:300;margin-bottom:1.25rem">Aplicá descuentos a todos los productos, a una categoría o a un producto específico. Aparecen como etiqueta en cada tarjeta.</p>
+      <div id="promos-list"></div>
+    </div>
+
+    <!-- CUPONES -->
+    <div class="admin-sec" id="tab-cupones">
+      <div class="admin-hdr">
+        <h3>Cupones</h3>
+        <button class="btn-primary" style="font-size:10px;padding:8px 14px" onclick="openCouponModal()">+ Nuevo cupón</button>
+      </div>
+      <p style="font-size:12px;color:var(--brown);font-weight:300;margin-bottom:1.25rem">Los clientes ingresan el código en el carrito para obtener el descuento.</p>
+      <div id="coupons-list"></div>
+    </div>
+
+    <!-- EDITOR SITIO -->
+    <div class="admin-sec" id="tab-editor">
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.04em;color:var(--dark);margin-bottom:1.5rem">Editor del sitio</h3>
+
+      <div class="editor-panel">
+        <h4>Textos del hero</h4>
+        <div class="form-group"><label>Etiqueta superior</label><input type="text" id="ed-label" oninput="liveHero()"></div>
+        <div class="form-group"><label>Título</label><input type="text" id="ed-title" oninput="liveHero()"></div>
+        <div class="form-group"><label>Descripción</label><textarea id="ed-desc" rows="3" style="resize:vertical" oninput="liveHero()"></textarea></div>
+        <div class="form-row-3" style="margin-bottom:1rem">
+          <div class="form-group" style="margin:0"><label>Color etiqueta</label><div style="display:flex;gap:.4rem;align-items:center"><input type="color" id="col-hero-label" oninput="liveHeroColors()" style="width:38px;height:34px;border:1px solid var(--tan);padding:2px"><input type="text" id="col-hero-label-hex" oninput="syncHeroHex('label')" style="flex:1;border:1px solid var(--tan);padding:7px 8px;font-size:11px;background:var(--cream);color:var(--dark);outline:none;font-family:'Montserrat',sans-serif"></div></div>
+          <div class="form-group" style="margin:0"><label>Color título</label><div style="display:flex;gap:.4rem;align-items:center"><input type="color" id="col-hero-title" oninput="liveHeroColors()" style="width:38px;height:34px;border:1px solid var(--tan);padding:2px"><input type="text" id="col-hero-title-hex" oninput="syncHeroHex('title')" style="flex:1;border:1px solid var(--tan);padding:7px 8px;font-size:11px;background:var(--cream);color:var(--dark);outline:none;font-family:'Montserrat',sans-serif"></div></div>
+          <div class="form-group" style="margin:0"><label>Color descripción</label><div style="display:flex;gap:.4rem;align-items:center"><input type="color" id="col-hero-desc" oninput="liveHeroColors()" style="width:38px;height:34px;border:1px solid var(--tan);padding:2px"><input type="text" id="col-hero-desc-hex" oninput="syncHeroHex('desc')" style="flex:1;border:1px solid var(--tan);padding:7px 8px;font-size:11px;background:var(--cream);color:var(--dark);outline:none;font-family:'Montserrat',sans-serif"></div></div>
+        </div>
+        <button class="btn-primary" style="font-size:10px;padding:8px 16px" onclick="saveHero()">Guardar textos</button>
+        <span id="hero-saved" style="font-size:11px;color:var(--green);margin-left:.75rem;display:none">✓ Guardado</span>
+      </div>
+
+      <div class="editor-panel">
+        <h4>Textos de secciones</h4>
+        <div class="form-row" style="margin-bottom:1rem">
+          <div class="form-group" style="margin:0"><label>Título — Ofertas especiales</label><input type="text" id="ed-ofertas-title" oninput="liveSections()"></div>
+          <div class="form-group" style="margin:0"><label>Subtítulo — Ofertas especiales</label><input type="text" id="ed-ofertas-sub" oninput="liveSections()"></div>
+        </div>
+        <div class="form-row" style="margin-bottom:1rem">
+          <div class="form-group" style="margin:0"><label>Título — Colección</label><input type="text" id="ed-coleccion-title" oninput="liveSections()"></div>
+          <div class="form-group" style="margin:0"><label>Subtítulo — Colección</label><input type="text" id="ed-coleccion-sub" oninput="liveSections()"></div>
+        </div>
+        <div class="form-row" style="margin-bottom:1rem">
+          <div class="form-group" style="margin:0"><label>Título — FAQ</label><input type="text" id="ed-faq-title" oninput="liveSections()"></div>
+          <div class="form-group" style="margin:0"><label>Subtítulo — FAQ</label><input type="text" id="ed-faq-sub" oninput="liveSections()"></div>
+        </div>
+        <button class="btn-primary" style="font-size:10px;padding:8px 16px" onclick="saveSections()">Guardar</button>
+        <span id="sections-saved" style="font-size:11px;color:var(--green);margin-left:.75rem;display:none">✓ Guardado</span>
+      </div>
+        <p style="font-size:11px;color:var(--brown);margin-bottom:.75rem;font-weight:300">Hero, secciones, nombres de productos.</p>
+        <div id="font-grid-titles"></div>
+        <div style="margin-top:1rem;padding:1rem;background:var(--beige);border:1px solid var(--tan)">
+          <p style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--brown);font-weight:600;margin-bottom:.4rem">Preview</p>
+          <p id="font-preview-title" style="font-size:28px;color:var(--dark)">Elua Shop · Perfumes</p>
+        </div>
+      </div>
+
+      <div class="editor-panel">
+        <h4>Tipografía de texto</h4>
+        <p style="font-size:11px;color:var(--brown);margin-bottom:.75rem;font-weight:300">Descripciones, precios, navegación.</p>
+        <div id="font-grid-body"></div>
+        <div style="margin-top:1rem;padding:1rem;background:var(--beige);border:1px solid var(--tan)">
+          <p style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--brown);font-weight:600;margin-bottom:.4rem">Preview</p>
+          <p id="font-preview-body" style="font-size:14px;color:var(--brown);line-height:1.65">Fragancias únicas. Envío a todo el país.</p>
+        </div>
+      </div>
+
+      <div class="editor-panel">
+        <h4>Tamaños de fuente</h4>
+        <div class="form-row-3" style="margin-bottom:1rem">
+          <div class="form-group" style="margin:0"><label>Título hero (px)</label><input type="number" id="sz-hero" min="32" max="120" oninput="applySizes()"></div>
+          <div class="form-group" style="margin:0"><label>Título sección (px)</label><input type="number" id="sz-sec" min="20" max="72" oninput="applySizes()"></div>
+          <div class="form-group" style="margin:0"><label>Texto base (px)</label><input type="number" id="sz-body" min="11" max="20" oninput="applySizes()"></div>
+        </div>
+        <div class="form-row-3">
+          <div class="form-group" style="margin:0"><label>Precios (px)</label><input type="number" id="sz-price" min="11" max="28" oninput="applySizes()"></div>
+          <div class="form-group" style="margin:0"><label>Nombre producto (px)</label><input type="number" id="sz-prod" min="10" max="20" oninput="applySizes()"></div>
+          <div class="form-group" style="margin:0"><label>Altura imágenes (px)</label><input type="number" id="sz-img" min="120" max="400" oninput="applySizes()"></div>
+        </div>
+      </div>
+
+      <div class="editor-panel">
+        <h4>Colores del sitio</h4>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.85rem;margin-bottom:1rem" id="color-pickers"></div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center">
+          <p style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brown)">Presets:</p>
+          <button class="tbl-btn" onclick="applyPreset('cream')">Crema elegante</button>
+          <button class="tbl-btn" onclick="applyPreset('dark')">Negro & dorado</button>
+          <button class="tbl-btn" onclick="applyPreset('rose')">Rosa & nude</button>
+          <button class="tbl-btn" onclick="applyPreset('white')">Blanco minimal</button>
+          <button class="tbl-btn danger" onclick="applyPreset('cream')">Reset</button>
+        </div>
+      </div>
+
+      <div class="editor-panel">
+        <h4>Banner superior</h4>
+        <p style="font-size:11px;color:var(--brown);margin-bottom:.75rem;font-weight:300">La barra que aparece arriba del navegador. Podés editarla o ocultarla.</p>
+        <div class="form-group"><label>Texto del banner</label><input type="text" id="ed-banner-text" placeholder="🚀 Envío gratis en todos los pedidos · Perfumes 100% originales" oninput="liveBanner()"></div>
+        <div class="form-row" style="margin-bottom:1rem">
+          <div class="form-group" style="margin:0">
+            <label>Color de fondo</label>
+            <div style="display:flex;gap:.4rem;align-items:center">
+              <input type="color" id="ed-banner-color" value="#C9A96E" oninput="liveBanner()" style="width:38px;height:34px;border:1px solid var(--tan);padding:2px;cursor:pointer">
+              <span style="font-size:11px;color:var(--brown)">Color del banner</span>
+            </div>
+          </div>
+          <div class="form-group" style="margin:0;display:flex;align-items:flex-end">
+            <label class="form-check" style="margin-bottom:0">
+              <input type="checkbox" id="ed-banner-visible" checked onchange="liveBanner()" style="width:auto;accent-color:var(--gold)">
+              Mostrar banner
+            </label>
+          </div>
+        </div>
+        <button class="btn-primary" style="font-size:10px;padding:8px 16px" onclick="saveBanner()">Guardar</button>
+        <span id="banner-saved" style="font-size:11px;color:var(--green);margin-left:.75rem;display:none">✓ Guardado</span>
+      </div>
+
+      <div class="editor-panel">
+        <h4>Redes sociales</h4>
+        <div class="form-row">
+          <div class="form-group" style="margin:0"><label>Instagram URL</label><input type="text" id="ed-ig" placeholder="https://instagram.com/eluashop"></div>
+          <div class="form-group" style="margin:0"><label>TikTok URL</label><input type="text" id="ed-tt" placeholder="https://tiktok.com/@eluashop"></div>
+        </div>
+        <button class="btn-primary" style="font-size:10px;padding:8px 16px;margin-top:.75rem" onclick="saveSocial()">Guardar</button>
+        <span id="social-saved" style="font-size:11px;color:var(--green);margin-left:.75rem;display:none">✓ Guardado</span>
+      </div>
+    </div>
+
+    <!-- SECCIONES -->
+    <div class="admin-sec" id="tab-secciones">
+      <div class="admin-hdr"><h3>Secciones</h3></div>
+      <p style="font-size:12px;color:var(--brown);margin-bottom:.5rem;font-weight:300">Arrastrá ☰ para reordenar. Toggle para mostrar u ocultar.</p>
+      <div id="secciones-list"></div>
+    </div>
+
+    <!-- CARRUSEL -->
+    <div class="admin-sec" id="tab-carrusel">
+      <div class="admin-hdr"><h3>Carrusel hero</h3><button class="btn-primary" style="font-size:10px;padding:8px 16px" onclick="openModal('carousel-modal')">+ Agregar imagen</button></div>
+      <p style="font-size:12px;color:var(--brown);margin-bottom:1.25rem;font-weight:300">Con imágenes activa el carrusel automático. Sin imágenes se muestra el fondo degradé.</p>
+      <div id="carousel-list"></div>
+    </div>
+
+    <!-- RECOMENDADOR -->
+    <div class="admin-sec" id="tab-recomendador">
+      <div class="admin-hdr"><h3>Recomendador IA</h3></div>
+      <div class="editor-panel">
+        <h4>Texto introductorio</h4>
+        <div class="form-group"><label>Descripción</label><textarea id="rec-intro-edit" rows="3" style="resize:vertical"></textarea></div>
+        <button class="btn-primary" style="font-size:10px;padding:8px 16px" onclick="saveRecIntro()">Guardar</button>
+        <span id="rec-intro-saved" style="font-size:11px;color:var(--green);margin-left:.75rem;display:none">✓ Guardado</span>
+      </div>
+      <div class="editor-panel"><h4>Preguntas</h4><div id="rec-questions-list"></div></div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="admin-sec" id="tab-faqs">
+      <div class="admin-hdr"><h3>FAQ</h3><button class="btn-primary" style="font-size:10px;padding:8px 16px" onclick="openFaqModal(null)">+ Nueva pregunta</button></div>
+      <div id="faqs-admin-list"></div>
+    </div>
+
+    <!-- CATEGORÍAS -->
+    <div class="admin-sec" id="tab-cats">
+      <div class="admin-hdr"><h3>Categorías</h3><button class="btn-primary" style="font-size:10px;padding:8px 16px" onclick="openCatModal(null)">+ Nueva</button></div>
+      <div id="cats-admin-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-modal" id="cart-modal" onclick="if(event.target===this)toggleCart()">
+  <div class="cart-panel">
+    <div class="cart-hdr"><h2>CARRITO</h2><button class="close-x" onclick="toggleCart()">✕</button></div>
+    <div class="cart-items-list" id="cart-items"><p class="cart-empty">Tu carrito está vacío</p></div>
+    <div id="cart-total-sec" style="display:none">
+      <div class="coupon-section">
+        <div class="coupon-row">
+          <input type="text" class="coupon-input" id="coupon-input" placeholder="¿Tenés un cupón?" oninput="this.value=this.value.toUpperCase()">
+          <button class="coupon-apply-btn" onclick="applyCoupon()">Aplicar</button>
+        </div>
+        <div class="coupon-msg" id="coupon-msg"></div>
+      </div>
+      <div class="cart-totals">
+        <div class="total-row"><span>Subtotal</span><span id="cart-subtotal">$0</span></div>
+        <div class="total-row disc" id="cart-disc-row" style="display:none"><span id="cart-disc-label">Descuento</span><span id="cart-disc-amt">−$0</span></div>
+        <div class="total-row main"><span>Total</span><span id="cart-total-amount">$0</span></div>
+      </div>
+      <button class="checkout-btn" onclick="goWhatsapp()">Finalizar por WhatsApp</button>
+      <p class="wa-note">Coordinamos pago y envío por WhatsApp</p>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="detail-modal" id="detail-modal" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-box">
+    <button class="detail-close" onclick="closeDetail()">✕</button>
+    <div class="detail-img" id="detail-img-el"></div>
+    <div class="detail-info" id="detail-info-el"></div>
+  </div>
+</div>
+
+<!-- PROMO MODAL -->
+<div class="modal-bg" id="promo-modal" onclick="if(event.target===this)closeModal('promo-modal')">
+  <div class="modal-box" style="max-width:540px">
+    <div class="modal-hdr"><h3 id="promo-modal-title">NUEVO DESCUENTO</h3><button class="close-x" onclick="closeModal('promo-modal')">✕</button></div>
+    <div class="form-group"><label>Nombre</label><input type="text" id="pm-name" placeholder="Ej: Promo verano"></div>
+    <div class="form-group"><label>Texto del badge (se muestra en el producto)</label><input type="text" id="pm-label" placeholder="Ej: PROMO · 20% OFF"></div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group" style="margin:0"><label>Tipo</label>
+        <select id="pm-type"><option value="pct">Porcentaje (%)</option><option value="fixed">Monto fijo (ARS)</option><option value="2x1">2x1</option></select>
+      </div>
+      <div class="form-group" style="margin:0"><label>Valor</label><input type="number" id="pm-val" placeholder="Ej: 15" min="0"></div>
+    </div>
+    <div class="form-group"><label>Aplicar a</label>
+      <select id="pm-scope" onchange="togglePromoScope()">
+        <option value="all">Todos los productos</option>
+        <option value="cat">Una categoría</option>
+        <option value="product">Un producto específico</option>
+      </select>
+    </div>
+    <div id="pm-cat-wrap" style="display:none" class="form-group"><label>Categoría</label><select id="pm-cat-sel"></select></div>
+    <div id="pm-prod-wrap" style="display:none" class="form-group"><label>Producto</label><select id="pm-prod-sel"></select></div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group" style="margin:0"><label>Color del badge</label>
+        <div style="display:flex;gap:.5rem;align-items:center">
+          <input type="color" id="pm-color" value="#C9A96E" style="width:38px;height:34px;border:1px solid var(--tan);padding:2px;cursor:pointer">
+          <span style="font-size:11px;color:var(--brown)">Elegí el color</span>
+        </div>
+      </div>
+      <div class="form-group" style="margin:0"><label>Fecha de vencimiento (opcional)</label><input type="date" id="pm-expires"></div>
+    </div>
+    <div id="pm-preview" style="padding:.75rem 1rem;background:var(--beige);border:1px solid var(--tan);margin-bottom:1rem">
+      <p style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--brown);font-weight:600;margin-bottom:.5rem">Preview badge</p>
+      <span id="pm-badge-preview" style="display:inline-block;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:#C9A96E">PROMO · 15% OFF</span>
+    </div>
+    <button class="btn-primary" style="width:100%" onclick="savePromo()">Crear descuento</button>
+  </div>
+</div>
+
+<!-- COUPON MODAL -->
+<div class="modal-bg" id="coupon-modal" onclick="if(event.target===this)closeModal('coupon-modal')">
+  <div class="modal-box" style="max-width:500px">
+    <div class="modal-hdr"><h3>NUEVO CUPÓN</h3><button class="close-x" onclick="closeModal('coupon-modal')">✕</button></div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group" style="margin:0"><label>Código</label><input type="text" id="cp-code" placeholder="Ej: VERANO20" oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')"></div>
+      <div class="form-group" style="margin:0"><label>Nombre interno</label><input type="text" id="cp-name" placeholder="Ej: Cupón verano"></div>
+    </div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group" style="margin:0"><label>Tipo</label><select id="cp-type"><option value="pct">Porcentaje (%)</option><option value="fixed">Monto fijo (ARS)</option></select></div>
+      <div class="form-group" style="margin:0"><label>Valor</label><input type="number" id="cp-val" placeholder="Ej: 15" min="0"></div>
+    </div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group" style="margin:0"><label>Mínimo de compra ARS (0 = sin mínimo)</label><div class="input-pfx"><span>$</span><input type="number" id="cp-min" placeholder="0" min="0"></div></div>
+      <div class="form-group" style="margin:0"><label>Límite de usos (0 = ilimitado)</label><input type="number" id="cp-maxuses" placeholder="0" min="0"></div>
+    </div>
+    <div class="form-group"><label>Fecha de vencimiento (opcional)</label><input type="date" id="cp-expires"></div>
+    <button class="btn-primary" style="width:100%;margin-top:.5rem" onclick="saveCoupon()">Crear cupón</button>
+  </div>
+</div>
+
+<!-- EDIT PRODUCT MODAL -->
+<div class="modal-bg" id="edit-modal" onclick="if(event.target===this)closeModal('edit-modal')">
+  <div class="modal-box">
+    <div class="modal-hdr"><h3>EDITAR PRODUCTO</h3><button class="close-x" onclick="closeModal('edit-modal')">✕</button></div>
+    <div class="form-group"><label>Nombre</label><input type="text" id="em-name"></div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group" style="margin:0"><label>Stock</label><input type="number" id="em-stock" oninput="calcEdit()"></div>
+      <div class="form-group" style="margin:0"><label>Costo USD</label><div class="input-pfx"><span>$</span><input type="number" id="em-cost-usd" oninput="calcEdit()" step="0.01"></div></div>
+    </div>
+    <div class="form-row" style="margin-bottom:1rem">
+      <div class="form-group" style="margin:0"><label>Precio ARS</label><div class="input-pfx"><span>$</span><input type="number" id="em-price" oninput="calcEdit()"></div></div>
+      <div class="form-group" style="margin:0"><label>Precio anterior ARS</label><div class="input-pfx"><span>$</span><input type="number" id="em-old-price"></div></div>
+    </div>
+    <div class="form-group" style="margin-bottom:1rem"><label>URL imagen</label><input type="text" id="em-img"></div>
+    <div class="form-group" style="margin-bottom:1rem"><label>Notas olfativas</label><input type="text" id="em-notes"></div>
+    <label class="form-check"><input type="checkbox" id="em-freeship"> Envío gratis</label>
+    <div class="price-calc show" style="margin-bottom:1.25rem">
+      <div class="calc-item">Costo ARS<span class="calc-val" id="ec-cost-ars">—</span></div>
+      <div class="calc-item">Ganancia<span class="calc-val green" id="ec-profit">—</span></div>
+      <div class="calc-item">Margen<span class="calc-val green" id="ec-margin">—</span></div>
+    </div>
+    <button class="btn-primary" style="width:100%" onclick="saveEdit()">Guardar cambios</button>
+  </div>
+</div>
+
+<!-- FAQ MODAL -->
+<div class="modal-bg" id="faq-modal" onclick="if(event.target===this)closeModal('faq-modal')">
+  <div class="modal-box">
+    <div class="modal-hdr"><h3 id="faq-modal-title">NUEVA PREGUNTA</h3><button class="close-x" onclick="closeModal('faq-modal')">✕</button></div>
+    <div class="form-group"><label>Pregunta</label><input type="text" id="fm-q"></div>
+    <div class="form-group"><label>Respuesta</label><textarea id="fm-a" rows="4" style="resize:vertical"></textarea></div>
+    <button class="btn-primary" style="width:100%;margin-top:.75rem" onclick="saveFaq()">Guardar</button>
+  </div>
+</div>
+
+<!-- CAT MODAL -->
+<div class="modal-bg" id="cat-modal" onclick="if(event.target===this)closeModal('cat-modal')">
+  <div class="modal-box">
+    <div class="modal-hdr"><h3 id="cat-modal-title">NUEVA CATEGORÍA</h3><button class="close-x" onclick="closeModal('cat-modal')">✕</button></div>
+    <div class="form-group"><label>Nombre</label><input type="text" id="cm-name"></div>
+    <div class="form-group"><label>Slug (sin espacios)</label><input type="text" id="cm-slug" placeholder="arabes"></div>
+    <div class="form-group"><label>Descripción</label><input type="text" id="cm-desc"></div>
+    <div class="form-group"><label>Etiqueta pequeña</label><input type="text" id="cm-label" placeholder="Colección"></div>
+    <button class="btn-primary" style="width:100%;margin-top:.75rem" onclick="saveCat()">Guardar</button>
+  </div>
+</div>
+
+<!-- CAROUSEL MODAL -->
+<div class="modal-bg" id="carousel-modal" onclick="if(event.target===this)closeModal('carousel-modal')">
+  <div class="modal-box">
+    <div class="modal-hdr"><h3>AGREGAR IMAGEN</h3><button class="close-x" onclick="closeModal('carousel-modal')">✕</button></div>
+    <div class="form-group"><label>URL de la imagen</label><input type="text" id="ci-url" placeholder="https://..."></div>
+    <div class="form-group"><label>Descripción (opcional)</label><input type="text" id="ci-desc"></div>
+    <p style="font-size:11px;color:var(--brown);font-weight:300">Tamaño recomendado: 1400×600px.</p>
+    <button class="btn-primary" style="width:100%;margin-top:1rem" onclick="saveCarouselImg()">Agregar</button>
+  </div>
+</div>
+
+<!-- REC QUESTION MODAL -->
+<div class="modal-bg" id="recq-modal" onclick="if(event.target===this)closeModal('recq-modal')">
+  <div class="modal-box">
+    <div class="modal-hdr"><h3>EDITAR PREGUNTA</h3><button class="close-x" onclick="closeModal('recq-modal')">✕</button></div>
+    <div class="form-group"><label>Pregunta</label><input type="text" id="rqm-q"></div>
+    <div class="form-group"><label>Opciones (una por línea)</label><textarea id="rqm-opts" rows="7" style="resize:vertical"></textarea></div>
+    <button class="btn-primary" style="width:100%;margin-top:.75rem" onclick="saveRecQ()">Guardar</button>
+  </div>
+</div>
+
+<!-- FLOATS -->
+<div class="float-group" id="float-group">
+  <a class="float-btn float-wa" href="https://wa.me/5492236870184" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+  <a class="float-btn float-tt" id="float-tt" href="#" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+  </a>
+</div>
+<button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════ CREDENCIALES ═══════
+const ADMIN_USER='elua', ADMIN_PASS='elua2026';
+
+// ═══════ ESTADO ═══════
+let COTIZ=1250;
+
+let siteConfig={
+  heroLabel:'Perfumería Oriental · Buenos Aires',
+  heroTitle:'El arte árabe del perfume',
+  heroDesc:'Descubrí fragancias únicas de Medio Oriente. Lattafa, Armaf, Rasasi y más.',
+  heroLabelColor:'#C9A96E', heroTitleColor:'#2C2416', heroDescColor:'#8B7355',
+  igLink:'', ttLink:'',
+  ofertasTitle:'Ofertas especiales', ofertasSub:'Descuentos por tiempo limitado',
+  coleccionTitle:'Nuestra colección', coleccionSub:'Todas las fragancias disponibles',
+  faqTitle:'Preguntas frecuentes', faqSub:'Todo lo que necesitás saber',
+  bannerText:'🚀 Envío gratis en todos los pedidos · Perfumes 100% originales',
+  bannerColor:'#C9A96E', bannerVisible:true,
+};
+
+let designConfig={
+  titleFont:'Bebas Neue', bodyFont:'Montserrat',
+  szHero:72, szSec:36, szBody:14, szPrice:15, szProd:13, szImg:200,
+  colors:{cream:'#FAF7F2',beige:'#F0EBE0',tan:'#D4C9B0',brown:'#8B7355',dark:'#2C2416',gold:'#C9A96E'},
+};
+
+const colorPresets={
+  cream:{cream:'#FAF7F2',beige:'#F0EBE0',tan:'#D4C9B0',brown:'#8B7355',dark:'#2C2416',gold:'#C9A96E'},
+  dark:{cream:'#181210',beige:'#2C2416',tan:'#4A3D2E',brown:'#C9A96E',dark:'#FAF7F2',gold:'#D4B97E'},
+  rose:{cream:'#FDF5F5',beige:'#F7E8E8',tan:'#E8C5C5',brown:'#9B6B6B',dark:'#3D1F1F',gold:'#C48B8B'},
+  white:{cream:'#FFFFFF',beige:'#F5F5F5',tan:'#E0E0E0',brown:'#666',dark:'#111',gold:'#333'},
+};
+const colorLabels={cream:'Fondo principal',beige:'Fondo tarjetas',tan:'Bordes',brown:'Texto secundario',dark:'Color principal',gold:'Color acento'};
+
+const titleFonts=[
+  {name:'Bebas Neue',css:'font-family:"Bebas Neue",sans-serif;font-size:22px;letter-spacing:.04em'},
+  {name:'Playfair Display',css:'font-family:"Playfair Display",serif;font-size:18px;font-weight:700'},
+  {name:'Cormorant Garamond',css:'font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:300;font-style:italic'},
+  {name:'Lora',css:'font-family:"Lora",serif;font-size:18px;font-style:italic'},
+  {name:'Raleway',css:'font-family:"Raleway",sans-serif;font-size:17px;font-weight:300;letter-spacing:.1em'},
+  {name:'Montserrat',css:'font-family:"Montserrat",sans-serif;font-size:16px;font-weight:600'},
+];
+const bodyFonts=[
+  {name:'Montserrat',css:'font-family:"Montserrat",sans-serif;font-size:13px'},
+  {name:'Raleway',css:'font-family:"Raleway",sans-serif;font-size:13px;font-weight:300'},
+  {name:'Lora',css:'font-family:"Lora",serif;font-size:13px'},
+  {name:'Cormorant Garamond',css:'font-family:"Cormorant Garamond",serif;font-size:15px;font-weight:300'},
+];
+
+let categories=[
+  {id:'arabes',name:'Perfumes Árabes',label:'Colección',desc:'Fragancias en frasco completo de las mejores casas de perfumería árabe.'},
+  {id:'decants',name:'Decants',label:'Prueba antes',desc:'Muestras de 5ml y 10ml para descubrir nuevas fragancias sin riesgo.'},
+];
+
+let faqs=[
+  {id:1,q:'¿Cómo realizo mi pedido?',a:'Agregá los productos al carrito y finalizá por WhatsApp al +54 9 223 687-0184.'},
+  {id:2,q:'¿Hacen envíos a todo el país?',a:'Sí, enviamos a todo Argentina. Tiempo estimado: 3-7 días hábiles.'},
+  {id:3,q:'¿Qué son los decants?',a:'Muestras de 5ml o 10ml ideales para probar antes de comprar el frasco completo.'},
+  {id:4,q:'¿Los perfumes son originales?',a:'Sí, todos 100% originales e importados directamente.'},
+  {id:5,q:'¿Cuáles son los medios de pago?',a:'Transferencia, MercadoPago y efectivo. Lo coordinamos por WhatsApp.'},
+];
+let faqEditing=null;
+
+let recQuestions=[
+  {id:'gender',q:'¿Para quién es el perfume?',opts:['Para mí (mujer)','Para mí (hombre)','Para regalar (mujer)','Para regalar (hombre)','Unisex / no importa']},
+  {id:'vibe',q:'¿Qué sensación te atrae más?',opts:['Dulce y golososo 🍬','Fresco y liviano 🌿','Intenso y misterioso 🌙','Floral y romántico 🌹','Amaderado y elegante 🪵']},
+  {id:'occasion',q:'¿Para qué ocasión?',opts:['Uso diario / trabajo','Noche / salidas','Verano / playa','Invierno / frío','Sin ocasión particular']},
+  {id:'budget',q:'¿Cuál es tu presupuesto?',opts:['Hasta $15.000 (decant)','$40.000 – $60.000','$60.000 – $80.000','Sin límite']},
+];
+let recQEditing=null;
+
+let sectionOrder=['sec-cats','sec-ofertas','sec-productos','sec-faq'];
+let sectionMeta={
+  'sec-cats':{name:'Categorías',desc:'Tarjetas de categorías',visible:true},
+  'sec-ofertas':{name:'Ofertas especiales',desc:'Sección de descuentos',visible:true},
+  'sec-productos':{name:'Colección completa',desc:'Grilla de todos los productos',visible:true},
+  'sec-faq':{name:'Preguntas frecuentes',desc:'FAQ',visible:true},
+};
+let dragSrc=null;
+
+let carouselImages=[];
+let carouselIdx=0, carouselTimer=null;
+
+// ── PROMOS & COUPONS ──
+let promos=[
+  {id:1,name:'Promo Khamrah',labelText:'8% OFF',type:'pct',val:8,scope:'product',productId:1,catId:null,expires:'',color:'#C9A96E',active:false},
+  {id:2,name:'Promo Khamrah Qahwa',labelText:'8% OFF',type:'pct',val:8,scope:'product',productId:2,catId:null,expires:'',color:'#C9A96E',active:false},
+  {id:3,name:'Promo Yara Tous',labelText:'9% OFF',type:'pct',val:9,scope:'product',productId:4,catId:null,expires:'',color:'#C9A96E',active:false},
+  {id:4,name:'Promo Yara Candy',labelText:'9% OFF',type:'pct',val:9,scope:'product',productId:6,catId:null,expires:'',color:'#C9A96E',active:false},
+  {id:5,name:'Promo Eclaire',labelText:'13% OFF',type:'pct',val:13,scope:'product',productId:7,catId:null,expires:'',color:'#c0392b',active:false},
+  {id:6,name:'Promo Stella Dustin Ikario',labelText:'15% OFF',type:'pct',val:15,scope:'product',productId:15,catId:null,expires:'',color:'#c0392b',active:false},
+  {id:7,name:'Promo Bharara King EDP',labelText:'10% OFF',type:'pct',val:10,scope:'product',productId:19,catId:null,expires:'',color:'#c0392b',active:false},
+];
+let coupons=[
+  {id:1,code:'BIENVENIDA',name:'Cupón bienvenida',type:'pct',val:10,minPurchase:0,maxUses:100,uses:0,expires:'2026-12-31',active:false},
+  {id:2,code:'VERANO20',name:'Promo verano',type:'fixed',val:5000,minPurchase:50000,maxUses:50,uses:0,expires:'2026-06-30',active:false},
+];
+let appliedCoupon=null;
+
+let products=[
+  {id:1,name:'Lattafa Khamrah',brand:'Lattafa',price:59900,oldPrice:64900,cat:'arabes',stock:8,costUSD:18,img:'',notes:'amaderado oud especiado dulce',freeShip:true,active:true},
+  {id:2,name:'Lattafa Khamrah Qahwa',brand:'Lattafa',price:59900,oldPrice:64900,cat:'arabes',stock:5,costUSD:18,img:'',notes:'café especiado oriental cálido',freeShip:true,active:true},
+  {id:3,name:'Lattafa Yara Rose',brand:'Lattafa',price:54900,oldPrice:0,cat:'arabes',stock:12,costUSD:16,img:'',notes:'floral rosa frutal fresco',freeShip:true,active:true},
+  {id:4,name:'Lattafa Yara Tous',brand:'Lattafa',price:49900,oldPrice:54900,cat:'arabes',stock:7,costUSD:15,img:'',notes:'floral fresco femenino ligero',freeShip:true,active:true},
+  {id:5,name:'Lattafa Yara Moi',brand:'Lattafa',price:54900,oldPrice:0,cat:'arabes',stock:9,costUSD:16,img:'',notes:'frutal gourmand dulce vainilla',freeShip:true,active:true},
+  {id:6,name:'Lattafa Yara Candy',brand:'Lattafa',price:49900,oldPrice:54900,cat:'arabes',stock:6,costUSD:15,img:'',notes:'dulce vainilla caramelo gourmand',freeShip:true,active:true},
+  {id:7,name:'Lattafa Eclaire',brand:'Lattafa',price:68900,oldPrice:78900,cat:'arabes',stock:4,costUSD:22,img:'',notes:'amaderado musk fresco unisex moderno',freeShip:true,active:true},
+  {id:8,name:'Lattafa Angham',brand:'Lattafa',price:64900,oldPrice:0,cat:'arabes',stock:11,costUSD:20,img:'',notes:'floral oriental musk amaderado',freeShip:true,active:true},
+  {id:9,name:'Lattafa Art of Nature II',brand:'Lattafa',price:75900,oldPrice:0,cat:'arabes',stock:3,costUSD:25,img:'',notes:'amaderado especiado premium unisex',freeShip:true,active:true},
+  {id:10,name:'Lattafa Badee Al Oud Honor & Glory',brand:'Lattafa',price:53900,oldPrice:0,cat:'arabes',stock:10,costUSD:17,img:'',notes:'oud amaderado masculino especiado intenso',freeShip:true,active:true},
+  {id:11,name:'Lattafa Asad Bourbon',brand:'Lattafa',price:64900,oldPrice:0,cat:'arabes',stock:8,costUSD:20,img:'',notes:'amaderado bourbon cuero masculino',freeShip:true,active:true},
+  {id:12,name:'Lattafa Victoria',brand:'Lattafa',price:59900,oldPrice:0,cat:'arabes',stock:15,costUSD:18,img:'',notes:'floral frutal femenino elegante',freeShip:true,active:true},
+  {id:13,name:'Lattafa Fakhar Gold',brand:'Lattafa',price:54900,oldPrice:0,cat:'arabes',stock:9,costUSD:17,img:'',notes:'oriental dorado especiado lujoso',freeShip:true,active:true},
+  {id:14,name:'Al Wataniah Durrat al Aroos',brand:'Al Wataniah',price:49900,oldPrice:0,cat:'arabes',stock:7,costUSD:14,img:'',notes:'floral nupcial rosa blanca suave',freeShip:true,active:true},
+  {id:15,name:'Stella Dustin Ikario',brand:'Stella',price:54900,oldPrice:64900,cat:'arabes',stock:5,costUSD:16,img:'',notes:'musk fresco moderno ligero unisex',freeShip:true,active:true},
+  {id:16,name:'Armaf Odyssey Home Black',brand:'Armaf',price:55900,oldPrice:0,cat:'arabes',stock:6,costUSD:17,img:'',notes:'especiado amaderado masculino intenso',freeShip:true,active:true},
+  {id:17,name:'Rasasi Hawas for Him',brand:'Rasasi',price:59900,oldPrice:0,cat:'arabes',stock:8,costUSD:18,img:'',notes:'acuático marino masculino fresco vibrante',freeShip:true,active:true},
+  {id:18,name:'Zimaya Tiramisu Caramel',brand:'Zimaya',price:63900,oldPrice:0,cat:'arabes',stock:4,costUSD:19,img:'',notes:'dulce caramelo vainilla gourmand femenino',freeShip:true,active:true},
+  {id:19,name:'Bharara King EDP',brand:'Bharara',price:95900,oldPrice:106900,cat:'arabes',stock:2,costUSD:32,img:'',notes:'amaderado especiado masculino premium lujoso',freeShip:true,active:true},
+  {id:20,name:'Lattafa Yara Decant',brand:'Lattafa',price:8900,oldPrice:0,cat:'decants',stock:20,costUSD:3,img:'',notes:'floral frutal femenino',freeShip:true,active:true},
+  {id:21,name:'Lattafa Khamrah Decant',brand:'Lattafa',price:8900,oldPrice:0,cat:'decants',stock:15,costUSD:3,img:'',notes:'amaderado oud especiado',freeShip:true,active:true},
+  {id:22,name:'Lattafa Badee Al Oud Decant',brand:'Lattafa',price:7900,oldPrice:0,cat:'decants',stock:18,costUSD:2.5,img:'',notes:'oud intenso amaderado',freeShip:true,active:true},
+  {id:23,name:'Lattafa Fakhar Decant',brand:'Lattafa',price:8900,oldPrice:0,cat:'decants',stock:12,costUSD:3,img:'',notes:'oriental especiado lujoso',freeShip:true,active:true},
+  {id:24,name:'Lattafa Eclaire Decant',brand:'Lattafa',price:8900,oldPrice:0,cat:'decants',stock:16,costUSD:3,img:'',notes:'amaderado musk fresco',freeShip:true,active:true},
+  {id:25,name:'Lattafa Angham Decant',brand:'Lattafa',price:9900,oldPrice:0,cat:'decants',stock:14,costUSD:3.5,img:'',notes:'floral oriental musk',freeShip:true,active:true},
+  {id:26,name:'Lattafa Nebras Decant',brand:'Lattafa',price:8500,oldPrice:0,cat:'decants',stock:10,costUSD:3,img:'',notes:'floral fresco femenino suave',freeShip:true,active:true},
+  {id:27,name:'Armaf Club de Nuit Decant',brand:'Armaf',price:8900,oldPrice:0,cat:'decants',stock:9,costUSD:3,img:'',notes:'fresco amaderado masculino',freeShip:true,active:true},
+  {id:28,name:'Maison Alhambra Philos Pura Decant',brand:'Maison Alhambra',price:4500,oldPrice:0,cat:'decants',stock:11,costUSD:1.5,img:'',notes:'floral blanco puro minimalista',freeShip:true,active:true},
+];
+
+let cart=[], editingId=null, catEditing=null, currentFilter='all', sheetsPreviewData=[];
+
+// ── ANALYTICS ──
+let analytics={}; // {productId: {clicks, cartAdds, lastClick}}
+function trackClick(id){
+  if(!analytics[id]) analytics[id]={clicks:0,cartAdds:0,lastClick:null};
+  analytics[id].clicks++;
+  analytics[id].lastClick=new Date().toISOString();
+}
+function trackCartAdd(id){
+  if(!analytics[id]) analytics[id]={clicks:0,cartAdds:0,lastClick:null};
+  analytics[id].cartAdds++;
+}
+function resetAnalytics(){if(confirm('¿Resetear todos los datos de analytics?')){analytics={};renderAnalytics();showToast('Analytics reseteado');}}
+
+
+// ═══════ HELPERS ═══════
+const fmt=n=>'$'+Math.round(n).toLocaleString('es-AR');
+const fmtUSD=n=>'USD '+n.toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// ═══════ PROMO HELPERS ═══════
+function getPromoForProduct(p){
+  const now=new Date();
+  return promos.find(pr=>{
+    if(!pr.active) return false;
+    if(pr.expires && new Date(pr.expires)<now) return false;
+    if(pr.scope==='all') return true;
+    if(pr.scope==='cat') return p.cat===pr.catId;
+    if(pr.scope==='product') return p.id===pr.productId;
+    return false;
+  })||null;
+}
+function applyPromoToPrice(price,promo){
+  if(!promo) return price;
+  if(promo.type==='pct') return Math.round(price*(1-promo.val/100));
+  if(promo.type==='fixed') return Math.max(0,price-promo.val);
+  return price;
+}
+
+// ═══════ VIEWS ═══════
+function showView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  const isAdmin=v==='admin'||v==='login';
+  document.getElementById('float-group').style.display=isAdmin?'none':'flex';
+  document.getElementById('back-top').style.display=isAdmin?'none':'';
+  document.getElementById('cotiz-bar').style.display=v==='admin'?'flex':'none';
+  if(v==='home') renderAll();
+  if(v==='rec') startRec();
+  if(v==='admin'){renderAdmin();fetchCotiz();}
+  window.scrollTo(0,0);
+}
+function goHome(){showView('home');}
+function scrollSec(id){setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});},100);}
+
+// ═══════ NAV ═══════
+function renderNav(){
+  document.getElementById('nav-links-list').innerHTML=[
+    ['Productos',"goHome();scrollSec('sec-productos')"],
+    ['Ofertas',"goHome();scrollSec('sec-ofertas')"],
+    ['Recomendador ✨',"showView('rec')"],
+    ['FAQ',"goHome();scrollSec('sec-faq')"],
+  ].map(([l,a])=>`<li><a onclick="${a}">${l}</a></li>`).join('');
+}
+
+// ═══════ DESIGN SYSTEM ═══════
+function applyDesignSystem(){
+  const d=designConfig;
+  const root=document.documentElement.style;
+  Object.entries(d.colors).forEach(([k,v])=>root.setProperty('--'+k,v));
+  const sans=['Montserrat','Raleway','Bebas Neue'];
+  const tFF=`'${d.titleFont}',${sans.includes(d.titleFont)?'sans-serif':'serif'}`;
+  const bFF=`'${d.bodyFont}',sans-serif`;
+  document.querySelectorAll('.hero-title,.sec-title,.cat-name,.offer-disc,.detail-name,.rec-title,.rec-step h3,.rec-result-title,.stat-val,.calc-val,.admin-topbar h2,.admin-hdr h3,.modal-hdr h3,.editor-panel h4').forEach(el=>{
+    el.style.setProperty('font-family',tFF,'important');
+  });
+  document.querySelectorAll('.hero-desc,.hero-label,.cat-desc,.sec-sub,.product-name,.product-brand,.price-cur,.price-old,.faq-q,.faq-a,.nav-links a,.cart-btn,.filter-btn,.add-btn,.btn-primary,.btn-outline,.btn-rec,.footer-wa,.social-btn,.form-group label,.admin-tab,.tbl-name').forEach(el=>{
+    el.style.fontFamily=bFF;
+  });
+  document.body.style.fontFamily=bFF;
+  document.querySelectorAll('.hero-title').forEach(el=>el.style.setProperty('font-size',d.szHero+'px','important'));
+  document.querySelectorAll('.sec-title').forEach(el=>el.style.fontSize=d.szSec+'px');
+  document.body.style.fontSize=d.szBody+'px';
+  document.querySelectorAll('.price-cur').forEach(el=>el.style.fontSize=d.szPrice+'px');
+  document.querySelectorAll('.product-name').forEach(el=>el.style.fontSize=d.szProd+'px');
+  document.querySelectorAll('.product-img').forEach(el=>el.style.height=d.szImg+'px');
+  const pt=document.getElementById('font-preview-title');
+  const pb=document.getElementById('font-preview-body');
+  if(pt) pt.style.setProperty('font-family',tFF,'important');
+  if(pb) pb.style.fontFamily=bFF;
+  applyHeroColors();
+}
+
+function applyHeroColors(){
+  const el=document.getElementById('hero-label-el');
+  const et=document.getElementById('hero-title-el');
+  const ed=document.getElementById('hero-desc-el');
+  if(el) el.style.color=siteConfig.heroLabelColor;
+  if(et) et.style.setProperty('color',siteConfig.heroTitleColor,'important');
+  if(ed) ed.style.color=siteConfig.heroDescColor;
+}
+
+function applySizes(){
+  const map={hero:'szHero',sec:'szSec',body:'szBody',price:'szPrice',prod:'szProd',img:'szImg'};
+  Object.entries(map).forEach(([k,v])=>{const el=document.getElementById('sz-'+k);if(el)designConfig[v]=parseInt(el.value)||designConfig[v];});
+  applyDesignSystem();
+}
+
+function applyColors(){
+  Object.keys(designConfig.colors).forEach(k=>{
+    const el=document.getElementById('col-'+k);
+    const hex=document.getElementById('col-'+k+'-hex');
+    if(el){designConfig.colors[k]=el.value;if(hex)hex.value=el.value;}
+  });
+  applyDesignSystem();
+}
+
+function syncColorHex(k){
+  const hex=document.getElementById('col-'+k+'-hex');
+  const col=document.getElementById('col-'+k);
+  if(hex&&col&&/^#[0-9A-Fa-f]{6}$/.test(hex.value)){col.value=hex.value;designConfig.colors[k]=hex.value;applyDesignSystem();}
+}
+
+function applyPreset(name){
+  const p=colorPresets[name]; if(!p) return;
+  Object.assign(designConfig.colors,p);
+  Object.keys(p).forEach(k=>{
+    const el=document.getElementById('col-'+k);const hex=document.getElementById('col-'+k+'-hex');
+    if(el)el.value=p[k];if(hex)hex.value=p[k];
+  });
+  applyDesignSystem();showToast('Preset: '+name);
+}
+
+function liveHeroColors(){
+  const lc=document.getElementById('col-hero-label').value;
+  const tc=document.getElementById('col-hero-title').value;
+  const dc=document.getElementById('col-hero-desc').value;
+  document.getElementById('col-hero-label-hex').value=lc;
+  document.getElementById('col-hero-title-hex').value=tc;
+  document.getElementById('col-hero-desc-hex').value=dc;
+  siteConfig.heroLabelColor=lc; siteConfig.heroTitleColor=tc; siteConfig.heroDescColor=dc;
+  applyHeroColors();
+}
+
+function syncHeroHex(part){
+  const hex=document.getElementById('col-hero-'+part+'-hex');
+  const col=document.getElementById('col-hero-'+part);
+  if(hex&&col&&/^#[0-9A-Fa-f]{6}$/.test(hex.value)){
+    col.value=hex.value;
+    siteConfig['hero'+part.charAt(0).toUpperCase()+part.slice(1)+'Color']=hex.value;
+    applyHeroColors();
+  }
+}
+
+// ═══════ STORE RENDER ═══════
+function renderAll(){
+  renderCarousel();
+  renderCatsGrid();
+  renderNavFilters();
+  renderProducts(currentFilter);
+  renderOffers();
+  renderFAQsHome();
+  applySectionOrder();
+  applySectionVisibility();
+  applyDesignSystem();
+  applyBanner();
+  updateSocialProof();
+  // apply section texts
+  const st=siteConfig;
+  const setTxt=(id,val)=>{const el=document.getElementById(id);if(el&&val)el.textContent=val;};
+  setTxt('ofertas-title',st.ofertasTitle);setTxt('ofertas-sub',st.ofertasSub);
+  setTxt('coleccion-title',st.coleccionTitle);setTxt('coleccion-sub',st.coleccionSub);
+  setTxt('faq-sec-title',st.faqTitle);setTxt('faq-sec-sub',st.faqSub);
+}
+
+function renderCatsGrid(){
+  const grid=document.getElementById('cats-grid');
+  grid.style.gridTemplateColumns=categories.length===1?'1fr':categories.length===2?'1fr 1fr':'repeat(auto-fill,minmax(260px,1fr))';
+  grid.innerHTML=categories.map(c=>`
+    <div class="cat-card" onclick="setFilter('${c.id}');scrollSec('sec-produtos')">
+      <p class="cat-label">${c.label}</p>
+      <h3 class="cat-name">${c.name}</h3>
+      <p class="cat-desc">${c.desc}</p>
+      <span class="cat-arrow">→</span>
+    </div>`).join('');
+}
+
+function renderNavFilters(){
+  document.getElementById('home-filters').innerHTML=
+    `<button class="filter-btn active" onclick="setFilter('all',this)">Todos</button>`+
+    categories.map(c=>`<button class="filter-btn" onclick="setFilter('${c.id}',this)">${c.name}</button>`).join('')+
+    `<button class="filter-btn" onclick="setFilter('lattafa',this)">Lattafa</button>`+
+    `<button class="filter-btn" onclick="setFilter('oferta',this)">Ofertas</button>`;
+}
+
+function renderProducts(filter){
+  currentFilter=filter||'all';
+  const grid=document.getElementById('products-grid');
+  let list=products.filter(p=>p.active);
+  if(currentFilter==='oferta') list=list.filter(p=>p.oldPrice>0);
+  else if(currentFilter==='lattafa') list=list.filter(p=>p.brand==='Lattafa');
+  else if(currentFilter!=='all') list=list.filter(p=>p.cat===currentFilter);
+  const sv=(document.getElementById('sort-select')||{}).value||'default';
+  if(sv==='price-asc') list.sort((a,b)=>a.price-b.price);
+  else if(sv==='price-desc') list.sort((a,b)=>b.price-a.price);
+  else if(sv==='name-asc') list.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(sv==='name-desc') list.sort((a,b)=>b.name.localeCompare(a.name));
+  else if(sv==='stock-desc') list.sort((a,b)=>b.stock-a.stock);
+  grid.innerHTML=list.map(p=>{
+    const promo=getPromoForProduct(p);
+    const disc=p.oldPrice>0?Math.round((1-p.price/p.oldPrice)*100):0;
+    const init=p.brand.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const ns=p.stock===0;
+    const isLast=p.stock>0&&p.stock<=3;
+    const waMsg=encodeURIComponent('Hola! Me interesa: '+p.name+' ('+fmt(p.price)+'). ¿Tienen disponible?');
+    return`<div class="product-card${ns?' no-stock':''}">
+      <div class="product-img" onclick="openDetail(${p.id})">
+        ${p.img?`<img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">`:''}
+        <span class="init">${p.img?'':init}</span>
+        ${isLast&&!ns?`<span class="badge badge-last">🔥 Últimas ${p.stock}</span>`:disc>0?`<span class="badge badge-off">${disc}% OFF</span>`:''}
+        ${p.cat==='decants'?`<span class="badge badge-dec">DECANT</span>`:''}
+        ${ns?`<span class="badge badge-ns">Sin stock</span>`:''}
+        ${promo?`<span class="promo-tag" style="background:${promo.color}">${promo.labelText}</span>`:''}
+      </div>
+      <div class="product-info">
+        <p class="product-brand">${p.brand}</p>
+        <p class="product-name" onclick="openDetail(${p.id})">${p.name}</p>
+        <div class="price-row">
+          <span class="price-cur">${promo&&promo.type!=='2x1'?fmt(applyPromoToPrice(p.price,promo)):fmt(p.price)}</span>
+          ${promo&&promo.type!=='2x1'?`<span class="price-old">${fmt(p.price)}</span>`:p.oldPrice>0?`<span class="price-old">${fmt(p.oldPrice)}</span>`:''}
+        </div>
+      </div>
+      <div class="product-footer">
+        <button class="add-btn" onclick="addToCart(${p.id})" ${ns?'disabled':''}>Agregar</button>
+        <a class="wa-prod-btn" href="https://wa.me/5492236870184?text=${waMsg}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>WA</a>
+      </div>
+      ${p.freeShip?`<span class="free-ship">✓ Envío gratis</span>`:''}
+    </div>`;
+  }).join('');
+}
+
+function setFilter(f,btn){
+  currentFilter=f;
+  if(btn){document.querySelectorAll('#home-filters .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  renderProducts(f);
+}
+
+function renderOffers(){
+  // Products with oldPrice OR with active promo
+  const now=new Date();
+  const promoProducts=products.filter(p=>{
+    if(!p.active||p.stock===0) return false;
+    const pr=getPromoForProduct(p);
+    return p.oldPrice>0||pr;
+  });
+  document.getElementById('offers-grid').innerHTML=promoProducts.length?promoProducts.map(p=>{
+    const pr=getPromoForProduct(p);
+    let discPct, origPrice, newPrice;
+    if(pr&&pr.type==='pct'){discPct=pr.val;origPrice=p.price;newPrice=applyPromoToPrice(p.price,pr);}
+    else if(pr&&pr.type==='fixed'){origPrice=p.price;newPrice=applyPromoToPrice(p.price,pr);discPct=Math.round((1-newPrice/origPrice)*100);}
+    else{origPrice=p.oldPrice;newPrice=p.price;discPct=Math.round((1-newPrice/origPrice)*100);}
+    return`<div class="offer-card" onclick="openDetail(${p.id})">
+      <div style="flex:1;min-width:0">
+        <p class="offer-name">${p.name}</p>
+        <div style="display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap">
+          <p class="offer-price">${fmt(newPrice)}</p>
+          <p style="font-size:11px;color:var(--tan);text-decoration:line-through;font-weight:400">${fmt(origPrice)}</p>
+        </div>
+      </div>
+      <div class="offer-disc" style="flex-shrink:0">${discPct}% OFF</div>
+    </div>`;
+  }).join(''):`<p style="font-size:12px;color:var(--tan);font-style:italic">No hay ofertas activas</p>`;
+}
+
+function renderFAQsHome(){
+  document.getElementById('faqs-home').innerHTML=faqs.map(f=>`
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q">${f.q}<span class="faq-icon">+</span></div>
+      <p class="faq-a">${f.a}</p>
+    </div>`).join('');
+}
+
+function updateSocialProof(){
+  const n=products.filter(p=>p.active&&p.stock>0).length;
+  const el=document.getElementById('sp-count');if(el)el.textContent=n;
+}
+
+// ═══════ SECTIONS ═══════
+function applySectionOrder(){
+  const homeView=document.getElementById('view-home');
+  const footer=homeView.querySelector('footer');
+  if(!footer) return;
+  sectionOrder.forEach(id=>{const el=document.getElementById(id);if(el)homeView.insertBefore(el,footer);});
+}
+function applySectionVisibility(){
+  Object.entries(sectionMeta).forEach(([id,s])=>{const el=document.getElementById(id);if(el)el.style.display=s.visible?'':'none';});
+}
+
+// ═══════ CAROUSEL ═══════
+function renderCarousel(){
+  const c=document.getElementById('hero-carousel');
+  const overlay=document.getElementById('hero-overlay');
+  const dots=document.getElementById('hero-dots');
+  if(!carouselImages.length){c.innerHTML='';overlay.style.display='none';dots.innerHTML='';return;}
+  overlay.style.display='block';
+  c.innerHTML=carouselImages.map((img,i)=>`<div class="hero-slide${i===0?' active':''}" style="background-image:url('${img.url}')"></div>`).join('');
+  if(carouselImages.length>1){
+    dots.innerHTML=carouselImages.map((_,i)=>`<button class="hero-dot${i===0?' active':''}" onclick="goSlide(${i})"></button>`).join('');
+    if(carouselTimer)clearInterval(carouselTimer);
+    carouselTimer=setInterval(()=>goSlide((carouselIdx+1)%carouselImages.length),4500);
+  }
+  carouselIdx=0;
+}
+function goSlide(i){
+  document.querySelectorAll('.hero-slide').forEach((s,j)=>s.classList.toggle('active',j===i));
+  document.querySelectorAll('.hero-dot').forEach((d,j)=>d.classList.toggle('active',j===i));
+  carouselIdx=i;
+}
+
+// ═══════ CART ═══════
+function toggleCart(){document.getElementById('cart-modal').classList.toggle('open');}
+function addToCart(id){
+  const p=products.find(x=>x.id===id);if(!p||p.stock===0)return;
+  trackCartAdd(id);
+  const ex=cart.find(x=>x.id===id);if(ex)ex.qty++;else cart.push({...p,qty:1});
+  updateCartUI();showToast('✦ '+p.name+' agregado');
+}
+function removeFromCart(id){cart=cart.filter(x=>x.id!==id);updateCartUI();}
+
+function updateCartUI(){
+  const cnt=cart.reduce((a,x)=>a+x.qty,0);
+  document.getElementById('cart-count').textContent=cnt;
+  const itemsEl=document.getElementById('cart-items');
+  const totEl=document.getElementById('cart-total-sec');
+  if(!cart.length){
+    itemsEl.innerHTML='<p class="cart-empty">Tu carrito está vacío</p>';
+    totEl.style.display='none';
+    appliedCoupon=null;
+    const cm=document.getElementById('coupon-msg');if(cm){cm.className='coupon-msg';cm.style.display='none';}
+    const ci=document.getElementById('coupon-input');if(ci)ci.value='';
+    return;
+  }
+  itemsEl.innerHTML=cart.map(x=>{
+    const pr=getPromoForProduct(x);
+    const pp=pr?applyPromoToPrice(x.price,pr):x.price;
+    const hasPromo=pp<x.price;
+    return`<div class="cart-item">
+      <div class="cart-item-info">
+        <p class="cart-item-name">${x.name}${x.qty>1?' ×'+x.qty:''}</p>
+        <div style="display:flex;align-items:baseline;gap:.4rem">
+          <p class="cart-item-price">${fmt(pp*x.qty)}</p>
+          ${hasPromo?`<p class="cart-item-old">${fmt(x.price*x.qty)}</p>`:''}
+        </div>
+        ${hasPromo?`<p class="cart-item-promo">${pr.labelText}</p>`:''}
+      </div>
+      <button class="ci-rm" onclick="removeFromCart(${x.id})">✕</button>
+    </div>`;
+  }).join('');
+  const subtotal=cart.reduce((a,x)=>{const pr=getPromoForProduct(x);return a+(pr?applyPromoToPrice(x.price,pr):x.price)*x.qty;},0);
+  let couponDisc=0;
+  if(appliedCoupon){
+    const cp=appliedCoupon;
+    const expired=cp.expires&&new Date(cp.expires)<new Date();
+    const maxed=cp.maxUses>0&&cp.uses>=cp.maxUses;
+    const belowMin=cp.minPurchase>0&&subtotal<cp.minPurchase;
+    if(!cp.active||expired||maxed||belowMin){appliedCoupon=null;}
+    else{couponDisc=cp.type==='pct'?Math.round(subtotal*cp.val/100):Math.min(cp.val,subtotal);}
+  }
+  const total=subtotal-couponDisc;
+  document.getElementById('cart-subtotal').textContent=fmt(subtotal);
+  const dr=document.getElementById('cart-disc-row');
+  if(couponDisc>0){
+    dr.style.display='flex';
+    document.getElementById('cart-disc-label').textContent='Cupón '+appliedCoupon.code;
+    document.getElementById('cart-disc-amt').textContent='−'+fmt(couponDisc);
+  } else {dr.style.display='none';}
+  document.getElementById('cart-total-amount').textContent=fmt(total);
+  totEl.style.display='block';
+}
+
+function applyCoupon(){
+  const code=document.getElementById('coupon-input').value.trim().toUpperCase();
+  const msgEl=document.getElementById('coupon-msg');
+  msgEl.style.display='block';
+  if(!code){msgEl.className='coupon-msg coupon-err';msgEl.textContent='Ingresá un código';return;}
+  const cp=coupons.find(c=>c.code===code&&c.active);
+  if(!cp){msgEl.className='coupon-msg coupon-err';msgEl.textContent='Código inválido o inactivo';appliedCoupon=null;updateCartUI();return;}
+  if(cp.expires&&new Date(cp.expires)<new Date()){msgEl.className='coupon-msg coupon-err';msgEl.textContent='Este cupón está vencido';appliedCoupon=null;updateCartUI();return;}
+  if(cp.maxUses>0&&cp.uses>=cp.maxUses){msgEl.className='coupon-msg coupon-err';msgEl.textContent='Este cupón ya alcanzó su límite de usos';appliedCoupon=null;updateCartUI();return;}
+  const subtotal=cart.reduce((a,x)=>{const pr=getPromoForProduct(x);return a+(pr?applyPromoToPrice(x.price,pr):x.price)*x.qty;},0);
+  if(cp.minPurchase>0&&subtotal<cp.minPurchase){msgEl.className='coupon-msg coupon-err';msgEl.textContent='Compra mínima: '+fmt(cp.minPurchase);appliedCoupon=null;updateCartUI();return;}
+  appliedCoupon=cp;
+  const disc=cp.type==='pct'?Math.round(subtotal*cp.val/100):Math.min(cp.val,subtotal);
+  const remaining=cp.maxUses>0?cp.maxUses-cp.uses-1:null;
+  const remainingTxt=remaining!==null?` · Quedan ${remaining} usos`:'';
+  msgEl.className='coupon-msg coupon-ok';msgEl.textContent='✓ Cupón aplicado · Ahorrás '+fmt(disc)+remainingTxt;
+  updateCartUI();
+}
+
+function goWhatsapp(){
+  if(!cart.length)return;
+  const lines=cart.map(x=>{
+    const pr=getPromoForProduct(x);
+    const pp=pr?applyPromoToPrice(x.price,pr):x.price;
+    return`- ${x.name} (x${x.qty}): ${fmt(pp*x.qty)}${pr?' ['+pr.labelText+']':''}`;
+  }).join('%0A');
+  const subtotal=cart.reduce((a,x)=>{const pr=getPromoForProduct(x);return a+(pr?applyPromoToPrice(x.price,pr):x.price)*x.qty;},0);
+  let couponDisc=0;
+  if(appliedCoupon){couponDisc=appliedCoupon.type==='pct'?Math.round(subtotal*appliedCoupon.val/100):Math.min(appliedCoupon.val,subtotal);}
+  const total=subtotal-couponDisc;
+  const couponLine=appliedCoupon?`%0ACupón: ${appliedCoupon.code} (−${fmt(couponDisc)})`:'';
+  window.open(`https://wa.me/5492236870184?text=Hola! Quiero hacer el siguiente pedido:%0A%0A${lines}${couponLine}%0A%0ATotal: ${fmt(total)}`,'_blank');
+  if(appliedCoupon){appliedCoupon.uses++;appliedCoupon=null;document.getElementById('coupon-input').value='';document.getElementById('coupon-msg').style.display='none';}
+}
+
+// ═══════ PRODUCT DETAIL ═══════
+function openDetail(id){
+  trackClick(id);
+  const p=products.find(x=>x.id===id);if(!p)return;
+  const promo=getPromoForProduct(p);
+  const init=p.brand.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const disc=p.oldPrice>0?Math.round((1-p.price/p.oldPrice)*100):0;
+  const soldN=Math.floor(p.id*7%80+15);
+  let sClass='ok',sTxt=p.stock+' en stock';
+  if(p.stock===0){sClass='out';sTxt='Sin stock';}
+  else if(p.stock<=3){sClass='low';sTxt='Últimas '+p.stock+' unidades';}
+  document.getElementById('detail-img-el').innerHTML=
+    `${p.img?`<img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">`:''}
+     <span class="init">${p.img?'':init}</span>
+     ${disc>0?`<span class="badge badge-off">${disc}% OFF</span>`:''}
+     ${promo?`<span style="position:absolute;bottom:0;left:0;right:0;padding:5px;text-align:center;font-size:10px;font-weight:700;letter-spacing:.07em;color:#fff;background:${promo.color};text-transform:uppercase;z-index:3">${promo.labelText}</span>`:''}`;
+  document.getElementById('detail-info-el').innerHTML=`
+    <p class="detail-brand">${p.brand}</p>
+    <h2 class="detail-name">${p.name}</h2>
+    <div class="detail-price-row">
+      <span class="detail-price">${fmt(p.price)}</span>
+      ${p.oldPrice>0?`<span class="detail-old">${fmt(p.oldPrice)}</span><span class="detail-disc-badge">${disc}% OFF</span>`:''}
+    </div>
+    ${promo?`<span class="detail-promo-badge" style="background:${promo.color}">${promo.labelText}</span>`:''}
+    <p class="detail-stock ${sClass}">${sTxt}</p>
+    ${p.notes?`<div class="detail-notes"><span class="detail-notes-lbl">Notas olfativas</span><p class="detail-notes-txt">${p.notes}</p></div>`:''}
+    <p class="detail-social">🔥 ${soldN} personas compraron este perfume</p>
+    ${p.freeShip?`<p style="font-size:11px;color:var(--green);font-weight:500">✓ Envío gratis</p>`:''}
+    <div class="detail-actions">
+      <button class="btn-primary" style="width:100%;padding:12px" onclick="addToCart(${p.id});closeDetail()" ${p.stock===0?'disabled':''}>
+        ${p.stock===0?'Sin stock':'Agregar al carrito'}
+      </button>
+      <button class="btn-outline" style="width:100%;padding:11px;margin-left:0;text-align:center" onclick="closeDetail()">Seguir viendo</button>
+    </div>`;
+  document.getElementById('detail-modal').classList.add('open');
+}
+function closeDetail(){document.getElementById('detail-modal').classList.remove('open');}
+
+// ═══════ SEARCH ═══════
+function doSearch(q){
+  const drop=document.getElementById('search-drop');
+  if(!q||q.length<2){drop.classList.remove('open');return;}
+  const matches=products.filter(p=>p.active&&(p.name.toLowerCase().includes(q.toLowerCase())||p.brand.toLowerCase().includes(q.toLowerCase()))).slice(0,6);
+  if(!matches.length){drop.innerHTML=`<p class="search-empty">No encontramos "${q}"</p>`;drop.classList.add('open');return;}
+  drop.innerHTML=matches.map(p=>{
+    const init=p.brand.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    return`<div class="search-item" onclick="openDetail(${p.id});closeSearch()">
+      <div class="search-thumb">${p.img?`<img src="${p.img}" onerror="this.style.display='none'">`:''}${p.img?'':init}</div>
+      <div style="flex:1"><p style="font-size:10px;color:var(--brown);font-weight:300">${p.brand}</p><p style="font-size:12px;font-weight:500;color:var(--dark)">${p.name}</p><p style="font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase">${fmt(p.price)}</p></div>
+    </div>`;
+  }).join('');
+  drop.classList.add('open');
+}
+function openSearch(){if(document.getElementById('nav-search-input').value.length>=2)document.getElementById('search-drop').classList.add('open');}
+function closeSearch(){document.getElementById('search-drop').classList.remove('open');}
+
+// ═══════ RECOMMENDER ═══════
+let recAnswers={}, recStep=0;
+function startRec(){recAnswers={};recStep=0;renderRecStep();}
+function renderRecStep(){
+  document.getElementById('rec-dots').innerHTML=recQuestions.map((_,i)=>`<button class="rec-dot ${i<recStep?'done':i===recStep?'active':''}"></button>`).join('');
+  const c=document.getElementById('rec-content');
+  if(recStep>=recQuestions.length){c.innerHTML=`<div class="rec-loading">Analizando tus preferencias...</div>`;setTimeout(showRecResult,1600);return;}
+  const q=recQuestions[recStep];
+  c.innerHTML=`<div class="rec-step"><h3>${q.q}</h3><div class="rec-options">${q.opts.map(o=>`<button class="rec-opt" onclick="selectRecOpt('${q.id}','${o.replace(/'/g,'')}',this)">${o}</button>`).join('')}</div></div>`;
+}
+function selectRecOpt(qid,val,btn){
+  document.querySelectorAll('.rec-opt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');
+  recAnswers[qid]=val;setTimeout(()=>{recStep++;renderRecStep();},350);
+}
+function showRecResult(){
+  const a=recAnswers;
+  const isFem=a.gender&&(a.gender.includes('mujer')||a.gender.includes('Unisex'));
+  const isDulce=a.vibe&&a.vibe.includes('Dulce');
+  const isFloral=a.vibe&&a.vibe.includes('Floral');
+  const isFresco=a.vibe&&a.vibe.includes('Fresco');
+  const isIntenso=a.vibe&&a.vibe.includes('Intenso');
+  const isAmad=a.vibe&&a.vibe.includes('Amaderado');
+  const isBudgetLow=a.budget&&a.budget.includes('15.000');
+  const isBudgetMid=a.budget&&(a.budget.includes('40.000')||a.budget.includes('60.000'));
+  let cands=products.filter(p=>p.active&&p.stock>0);
+  if(isBudgetLow) cands=cands.filter(p=>p.cat==='decants');
+  else if(isBudgetMid) cands=cands.filter(p=>p.price<=65000&&p.cat!=='decants');
+  else cands=cands.filter(p=>p.cat!=='decants');
+  const scored=cands.map(p=>{
+    let s=0;const n=p.notes.toLowerCase();
+    if(isDulce&&(n.includes('dulce')||n.includes('vainilla')||n.includes('caramel')||n.includes('gourmand')))s+=3;
+    if(isFloral&&n.includes('floral'))s+=3;
+    if(isFresco&&(n.includes('fresco')||n.includes('acuático')||n.includes('marino')))s+=3;
+    if(isIntenso&&(n.includes('intenso')||n.includes('oud')||n.includes('especiado')))s+=3;
+    if(isAmad&&(n.includes('amaderado')||n.includes('cuero')||n.includes('bourbon')))s+=3;
+    if(isFem&&(n.includes('femenino')||n.includes('floral')||n.includes('rosa')))s+=2;
+    if(!isFem&&(n.includes('masculino')||n.includes('marino')||n.includes('oud')))s+=2;
+    if(p.oldPrice>0)s+=1;
+    return{...p,score:s};
+  });
+  scored.sort((a,b)=>b.score-a.score);
+  const rec=scored[0]||cands[0];
+  if(!rec){document.getElementById('rec-content').innerHTML=`<div class="rec-result"><p style="font-size:13px;color:var(--brown);font-style:italic;padding:1rem 0">No encontramos productos para tu búsqueda. ¡Escribinos por WhatsApp!</p></div>`;return;}
+  const whyMap={dulce:'Su perfil dulce y envolvente lo hace irresistible.',floral:'Sus notas florales crean una elegancia romántica perfecta.',fresco:'Su carácter fresco es ideal para el día a día.',intenso:'Sus notas de oud y especias crean una presencia inolvidable.',amaderado:'Su base amaderada es una elección elegante y duradera.'};
+  const why=isDulce?whyMap.dulce:isFloral?whyMap.floral:isFresco?whyMap.fresco:isIntenso?whyMap.intenso:whyMap.amaderado;
+  document.getElementById('rec-dots').innerHTML=recQuestions.map(()=>`<button class="rec-dot done"></button>`).join('');
+  document.getElementById('rec-content').innerHTML=`
+    <div class="rec-result">
+      <p class="rec-result-lbl">Tu fragancia ideal es</p>
+      <h2 class="rec-result-title">${rec.name}</h2>
+      <p class="rec-result-brand">${rec.brand}</p>
+      <p class="rec-result-why">"${why}"</p>
+      <p class="rec-result-price">${fmt(rec.price)}</p>
+      <button class="btn-primary" onclick="addToCart(${rec.id});goHome();toggleCart()">Agregar al carrito</button>
+      <button class="btn-outline" onclick="startRec()">Volver a empezar</button>
+    </div>`;
+}
+
+// ═══════ AUTH ═══════
+function doLogin(){
+  const u=document.getElementById('login-user').value.trim();
+  const p=document.getElementById('login-pass').value;
+  if(u===ADMIN_USER&&p===ADMIN_PASS){document.getElementById('login-err').classList.remove('show');showView('admin');}
+  else document.getElementById('login-err').classList.add('show');
+}
+function logout(){showView('home');}
+
+// ═══════ COTIZ ═══════
+async function fetchCotiz(){
+  try{
+    const r=await fetch('https://api.bluelytics.com.ar/v2/latest');
+    const d=await r.json();
+    COTIZ=d.blue.value_sell||1250;
+    document.getElementById('cotiz-val').textContent=fmt(COTIZ)+' / USD';
+    document.getElementById('cotiz-used').textContent=fmt(COTIZ)+' (Blue)';
+    renderStats();
+  }catch(e){document.getElementById('cotiz-val').textContent='No disponible · $'+COTIZ;}
+}
+function updateCotiz(){fetchCotiz();showToast('Cotización actualizada');}
+
+// ═══════ ADMIN ═══════
+function renderAdmin(){
+  renderStats();renderAdminTable();renderLowStock();
+  renderPromos();renderCoupons();
+  renderFaqsAdmin();renderCatsAdmin();
+  renderEditorTab();renderSeccionesAdmin();renderCarouselAdmin();renderRecAdmin();
+}
+
+function renderAnalytics(){
+  const filter=(document.getElementById('analytics-filter')||{}).value||'clicks';
+  const useCart=filter==='cart';
+
+  // build sorted list
+  const data=products.filter(p=>p.active).map(p=>{
+    const a=analytics[p.id]||{clicks:0,cartAdds:0,lastClick:null};
+    const conv=a.clicks>0?Math.round((a.cartAdds/a.clicks)*100):0;
+    return{...p,clicks:a.clicks,cartAdds:a.cartAdds,conv,lastClick:a.lastClick};
+  }).sort((a,b)=>useCart?(b.cartAdds-a.cartAdds):(b.clicks-a.clicks));
+
+  const totalClicks=data.reduce((s,p)=>s+p.clicks,0);
+  const totalCart=data.reduce((s,p)=>s+p.cartAdds,0);
+  const topProduct=data[0];
+  const avgConv=totalClicks>0?Math.round((totalCart/totalClicks)*100):0;
+
+  // summary stats
+  document.getElementById('analytics-stats').innerHTML=`
+    <div class="stat-card"><p class="stat-lbl">Total clicks</p><p class="stat-val">${totalClicks}</p><p class="stat-sub">en todos los productos</p></div>
+    <div class="stat-card"><p class="stat-lbl">Agregados al carrito</p><p class="stat-val stat-green">${totalCart}</p><p class="stat-sub">desde clicks</p></div>
+    <div class="stat-card"><p class="stat-lbl">Conversión media</p><p class="stat-val">${avgConv}%</p><p class="stat-sub">click → carrito</p></div>
+    <div class="stat-card"><p class="stat-lbl">Producto más ${useCart?'agregado':'visto'}</p><p class="stat-val" style="font-size:16px;letter-spacing:.02em">${topProduct&&(useCart?topProduct.cartAdds:topProduct.clicks)>0?topProduct.name.split(' ').slice(0,2).join(' '):'—'}</p><p class="stat-sub">${topProduct&&(useCart?topProduct.cartAdds:topProduct.clicks)>0?(useCart?topProduct.cartAdds+' veces al carrito':topProduct.clicks+' clicks'):'Sin datos'}</p></div>`;
+
+  // chart — top 10
+  const top10=data.slice(0,10);
+  const maxVal=top10.length>0?Math.max(...top10.map(p=>useCart?p.cartAdds:p.clicks),1):1;
+  document.getElementById('analytics-chart').innerHTML=top10.length&&(useCart?top10[0].cartAdds:top10[0].clicks)>0?
+    top10.map((p,i)=>{
+      const val=useCart?p.cartAdds:p.clicks;
+      const pct=Math.round((val/maxVal)*100);
+      return`<div class="chart-bar-wrap">
+        <span class="chart-bar-label" title="${p.name}">${i+1}. ${p.name}</span>
+        <div class="chart-bar-track">
+          <div class="chart-bar-fill ${useCart?'cart-bar':''}" style="width:${pct}%">
+            ${pct>15?`<span class="chart-bar-val">${val}</span>`:''}
+          </div>
+        </div>
+        ${pct<=15?`<span class="chart-bar-val outside">${val}</span>`:''}
+      </div>`;
+    }).join('')
+    :`<div style="padding:2rem;text-align:center;font-size:13px;color:var(--tan);font-style:italic">Sin datos todavía — los clicks se registran cuando los clientes navegan la tienda</div>`;
+
+  // full table
+  document.getElementById('analytics-tbody').innerHTML=data.map((p,i)=>{
+    const convCls=p.conv>=30?'conv-high':p.conv>=10?'conv-med':'conv-low';
+    const lastClickTxt=p.lastClick?new Date(p.lastClick).toLocaleString('es-AR',{dateStyle:'short',timeStyle:'short'}):'—';
+    return`<tr>
+      <td style="font-weight:600;color:var(--brown)">${i+1}</td>
+      <td><span class="tbl-name">${p.name}</span><br><span class="tbl-sub">${p.brand}</span></td>
+      <td style="font-weight:600">${p.clicks}</td>
+      <td style="font-weight:600;color:var(--green)">${p.cartAdds}</td>
+      <td><span class="conv-badge ${convCls}">${p.conv}%</span></td>
+      <td style="font-size:11px;color:var(--brown)">${lastClickTxt}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderStats(){
+  const total=products.filter(p=>p.active).length;
+  const inStock=products.filter(p=>p.active&&p.stock>0).length;
+  const lowStock=products.filter(p=>p.active&&p.stock<=2).length;
+  const profit=products.filter(p=>p.active&&p.stock>0).reduce((a,p)=>a+(p.price-p.costUSD*COTIZ)*p.stock,0);
+  const costUSD=products.filter(p=>p.active&&p.stock>0).reduce((a,p)=>a+p.costUSD*p.stock,0);
+  document.getElementById('stats-grid').innerHTML=`
+    <div class="stat-card"><p class="stat-lbl">Productos activos</p><p class="stat-val">${total}</p><p class="stat-sub">${inStock} con stock</p></div>
+    <div class="stat-card"><p class="stat-lbl">Stock crítico (≤2)</p><p class="stat-val stat-red">${lowStock}</p><p class="stat-sub">Reabastecer</p></div>
+    <div class="stat-card"><p class="stat-lbl">Ganancia potencial</p><p class="stat-val stat-green">${fmt(profit)}</p><p class="stat-sub">Con stock actual</p></div>
+    <div class="stat-card"><p class="stat-lbl">Inversión en stock</p><p class="stat-val">${fmtUSD(costUSD)}</p><p class="stat-sub">${fmt(costUSD*COTIZ)} ARS</p></div>`;
+}
+
+function renderAdminTable(){
+  const q=(document.getElementById('search-admin')||{}).value||'';
+  const list=products.filter(p=>p.name.toLowerCase().includes(q.toLowerCase())||p.brand.toLowerCase().includes(q.toLowerCase()));
+  document.getElementById('admin-tbody').innerHTML=list.map(p=>{
+    const cARS=p.costUSD*COTIZ;const profit=p.price-cARS;const margin=p.price>0?Math.round((profit/p.price)*100):0;
+    const sc=p.stock===0?'sout':p.stock<=2?'slow':'sok';
+    const st=p.stock===0?'Sin stock':p.stock<=2?`Crítico (${p.stock})`:p.stock;
+    return`<tr style="${p.active?'':'opacity:.5'}">
+      <td><span class="tbl-name">${p.name}</span><br><span class="tbl-sub">${p.brand}</span></td>
+      <td style="font-size:11px">${categories.find(c=>c.id===p.cat)?.name||p.cat}</td>
+      <td><span class="stock-badge ${sc}">${st}</span></td>
+      <td style="font-size:11px">${fmtUSD(p.costUSD)}</td>
+      <td style="font-weight:600">${fmt(p.price)}</td>
+      <td style="font-size:11px">${fmt(cARS)}</td>
+      <td class="${profit>=0?'profit-pos':'profit-neg'}">${fmt(profit)}</td>
+      <td class="${margin>=0?'profit-pos':'profit-neg'}">${margin}%</td>
+      <td style="font-size:10px;color:${p.freeShip?'var(--green)':'var(--tan)'}">${p.freeShip?'✓':'✗'}</td>
+      <td><div class="tbl-actions">
+        <button class="tbl-btn" onclick="openEditProduct(${p.id})">Editar</button>
+        <button class="tbl-btn danger" onclick="toggleActive(${p.id})">${p.active?'Ocultar':'Activar'}</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderLowStock(){
+  const list=products.filter(p=>p.active&&p.stock<=2);
+  const el=document.getElementById('low-stock-list');
+  if(!list.length){el.innerHTML=`<p style="font-size:12px;color:var(--brown);font-style:italic">Todo el stock está bien ✓</p>`;return;}
+  el.innerHTML=`<table class="admin-table"><thead><tr><th>Producto</th><th>Marca</th><th>Stock</th><th>Acción</th></tr></thead><tbody>`+
+    list.map(p=>`<tr>
+      <td><span class="tbl-name">${p.name}</span></td>
+      <td><span class="tbl-sub">${p.brand}</span></td>
+      <td><span class="stock-badge ${p.stock===0?'sout':'slow'}">${p.stock===0?'Sin stock':p.stock+' ud.'}</span></td>
+      <td><button class="tbl-btn" onclick="quickRestock(${p.id})">+10 unidades</button></td>
+    </tr>`).join('')+'</tbody></table>';
+}
+
+function quickRestock(id){const p=products.find(x=>x.id===id);if(p){p.stock+=10;renderAdmin();showToast('Stock actualizado: '+p.name);}}
+function toggleActive(id){const p=products.find(x=>x.id===id);if(p){p.active=!p.active;renderAdmin();renderAll();showToast((p.active?'Activado: ':'Ocultado: ')+p.name);}}
+
+function openEditProduct(id){
+  editingId=id;const p=products.find(x=>x.id===id);
+  document.getElementById('em-name').value=p.name;
+  document.getElementById('em-stock').value=p.stock;
+  document.getElementById('em-cost-usd').value=p.costUSD;
+  document.getElementById('em-price').value=p.price;
+  document.getElementById('em-old-price').value=p.oldPrice||0;
+  document.getElementById('em-img').value=p.img||'';
+  document.getElementById('em-notes').value=p.notes||'';
+  document.getElementById('em-freeship').checked=p.freeShip!==false;
+  calcEdit();openModal('edit-modal');
+}
+function calcEdit(){
+  const cu=parseFloat(document.getElementById('em-cost-usd').value)||0;
+  const pr=parseFloat(document.getElementById('em-price').value)||0;
+  const cARS=cu*COTIZ;const profit=pr-cARS;const margin=pr>0?Math.round((profit/pr)*100):0;
+  document.getElementById('ec-cost-ars').textContent=fmt(cARS);
+  document.getElementById('ec-profit').textContent=fmt(profit);
+  document.getElementById('ec-profit').className='calc-val '+(profit>=0?'green':'');
+  document.getElementById('ec-margin').textContent=margin+'%';
+}
+function saveEdit(){
+  if(!editingId)return;const p=products.find(x=>x.id===editingId);
+  p.name=document.getElementById('em-name').value;
+  p.stock=parseInt(document.getElementById('em-stock').value)||0;
+  p.costUSD=parseFloat(document.getElementById('em-cost-usd').value)||0;
+  p.price=parseInt(document.getElementById('em-price').value)||0;
+  p.oldPrice=parseInt(document.getElementById('em-old-price').value)||0;
+  p.img=document.getElementById('em-img').value;
+  p.notes=document.getElementById('em-notes').value;
+  p.freeShip=document.getElementById('em-freeship').checked;
+  closeModal('edit-modal');renderAdmin();renderAll();showToast('✓ '+p.name+' actualizado');
+}
+
+function populateCatSelect(id){
+  const sel=document.getElementById(id);
+  if(sel) sel.innerHTML=`<option value="all">Todos</option>`+categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+}
+function populateProductSelect(id){
+  const sel=document.getElementById(id);
+  if(sel) sel.innerHTML=products.filter(p=>p.active).map(p=>`<option value="${p.id}">${p.name} — ${fmt(p.price)}</option>`).join('');
+}
+
+function calcNew(){
+  const cu=parseFloat(document.getElementById('np-cost-usd').value)||0;
+  const pr=parseFloat(document.getElementById('np-price').value)||0;
+  const calc=document.getElementById('np-calc');
+  if(!cu&&!pr){calc.classList.remove('show');return;}
+  calc.classList.add('show');
+  const cARS=cu*COTIZ;const profit=pr-cARS;const margin=pr>0?Math.round((profit/pr)*100):0;
+  document.getElementById('nc-cost-ars').textContent=fmt(cARS);
+  document.getElementById('nc-profit').textContent=fmt(profit);
+  document.getElementById('nc-margin').textContent=margin+'%';
+  document.getElementById('nc-profit-usd').textContent=fmtUSD(COTIZ>0?profit/COTIZ:0);
+}
+function addNewProduct(){
+  const name=document.getElementById('np-name').value.trim();if(!name){showToast('Ingresá el nombre');return;}
+  products.push({id:Date.now(),name,brand:document.getElementById('np-brand').value||'Sin marca',
+    price:parseInt(document.getElementById('np-price').value)||0,oldPrice:parseInt(document.getElementById('np-old-price').value)||0,
+    cat:document.getElementById('np-cat').value,stock:parseInt(document.getElementById('np-stock').value)||0,
+    costUSD:parseFloat(document.getElementById('np-cost-usd').value)||0,img:document.getElementById('np-img').value||'',
+    notes:document.getElementById('np-notes').value||'',freeShip:document.getElementById('np-freeship').checked,active:true});
+  ['np-name','np-brand','np-price','np-old-price','np-cost-usd','np-img','np-notes'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('np-stock').value='10';document.getElementById('np-freeship').checked=true;
+  document.getElementById('np-calc').classList.remove('show');
+  renderAdmin();renderAll();showToast('✓ Producto agregado');
+  switchTab('productos',document.querySelectorAll('.admin-tab')[1]);
+}
+
+// ═══════ SHEETS ═══════
+async function importSheets(doImport){
+  const url=document.getElementById('sheets-url').value.trim();
+  if(!url){showToast('Ingresá la URL');return;}
+  const statusEl=document.getElementById('sheets-status');
+  const previewEl=document.getElementById('sheets-preview');
+  statusEl.className='sheets-status s-loading';statusEl.textContent='Conectando...';
+  previewEl.innerHTML='';
+  try{
+    const r=await fetch(url);if(!r.ok)throw new Error('No se pudo acceder a la URL');
+    const text=await r.text();
+    const rows=text.split('\n').filter(r=>r.trim()).slice(1).map(row=>{
+      const cells=[];let cur='',inQ=false;
+      for(const ch of row){if(ch==='"'){inQ=!inQ;}else if(ch===','&&!inQ){cells.push(cur.trim());cur='';}else cur+=ch;}
+      cells.push(cur.trim());return cells;
+    }).filter(r=>r[0]);
+    if(!rows.length)throw new Error('La hoja parece vacía');
+    // helper to parse prices like $59,900.00 or 59900 or 59.900
+    function parsePrice(v){
+      if(!v)return 0;
+      // remove $ and any currency symbols, then remove dots used as thousand separators if comma follows
+      const clean=v.toString().replace(/[$\s]/g,'').replace(/\./g,'').replace(/,/g,'.');
+      return Math.round(parseFloat(clean))||0;
+    }
+    function parseCat(v){
+      const c=(v||'').toLowerCase().trim();
+      if(c.includes('decant'))return'decants';
+      return'arabes'; // perfume, arabe, arabes → arabes
+    }
+    const data=rows.map(r=>({
+      name:r[0]||'',brand:r[1]||'',cat:parseCat(r[2]),
+      stock:parseInt(r[3])||0,costUSD:parseFloat((r[4]||'').replace(/[$,]/g,''))||0,
+      price:parsePrice(r[5]),oldPrice:parsePrice(r[6]),
+      img:r[7]||'',notes:r[8]||'',
+      freeShip:(r[9]||'si').toLowerCase().trim()==='si',
+    }));
+    if(doImport){
+      performImport(data);
+    } else {
+      sheetsPreviewData=data;
+      statusEl.className='sheets-status s-ok';statusEl.textContent=`✓ ${data.length} productos encontrados`;
+      previewEl.innerHTML=`<div class="tbl-wrap" style="margin-top:1rem"><table class="admin-table">
+        <thead><tr><th>Nombre</th><th>Marca</th><th>Cat.</th><th>Stock</th><th>Costo USD</th><th>Precio ARS</th></tr></thead>
+        <tbody>${data.slice(0,5).map(p=>`<tr><td>${p.name}</td><td>${p.brand}</td><td>${p.cat}</td><td>${p.stock}</td><td>${fmtUSD(p.costUSD)}</td><td>${fmt(p.price)}</td></tr>`).join('')}</tbody>
+      </table></div>
+      <button class="btn-primary" style="margin-top:1rem;font-size:10px;padding:9px 22px" onclick="performImport(sheetsPreviewData)">Confirmar importación</button>`;
+    }
+  }catch(e){statusEl.className='sheets-status s-err';statusEl.textContent='Error: '+e.message+'. Verificá que la hoja sea pública como CSV.';}
+}
+function performImport(data){
+  const existing=new Map(products.map(p=>[p.name.toLowerCase(),p]));
+  let upd=0,added=0;
+  data.forEach(row=>{
+    if(!row.name)return;
+    const k=row.name.toLowerCase();
+    if(existing.has(k)){const p=existing.get(k);p.stock=row.stock;p.costUSD=row.costUSD;p.price=row.price;p.oldPrice=row.oldPrice;p.freeShip=row.freeShip;if(row.img)p.img=row.img;if(row.notes)p.notes=row.notes;upd++;}
+    else{products.push({id:Date.now()+Math.random(),...row,active:true});added++;}
+  });
+  document.getElementById('sheets-status').className='sheets-status s-ok';
+  document.getElementById('sheets-status').textContent=`✓ ${upd} actualizados · ${added} nuevos`;
+  document.getElementById('sheets-preview').innerHTML='';
+  renderAdmin();renderAll();showToast('Importación completa');
+}
+
+// ═══════ PROMOS ═══════
+function renderPromos(){
+  const now=new Date();
+  document.getElementById('promos-list').innerHTML=promos.length?promos.map(pr=>{
+    const expired=pr.expires&&new Date(pr.expires)<now;
+    const scopeTxt=pr.scope==='all'?'Todos los productos':pr.scope==='cat'?(categories.find(c=>c.id===pr.catId)?.name||pr.catId):(products.find(p=>p.id===pr.productId)?.name||'Producto');
+    const valTxt=pr.type==='pct'?pr.val+'%':pr.type==='fixed'?fmt(pr.val):'2x1';
+    const expTxt=pr.expires?`Vence: ${new Date(pr.expires).toLocaleDateString('es-AR')}`:'Sin vencimiento';
+    const statusCls=!pr.active?'status-paused':expired?'status-expired':'status-active';
+    const statusTxt=!pr.active?'Pausada':expired?'Vencida':'Activa';
+    return`<div class="promo-card-new">
+      <div style="display:flex;align-items:flex-start;gap:.75rem;flex-wrap:wrap">
+        <span style="display:inline-block;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:${pr.color||'#C9A96E'};color:#fff;display:inline-block;flex-shrink:0">${pr.labelText||pr.name}</span>
+        <div style="flex:1;min-width:0">
+          <p style="font-size:13px;font-weight:600;color:var(--dark)">${pr.name}</p>
+          <p style="font-size:10px;color:var(--brown);font-weight:300;margin-top:2px">${valTxt} · ${scopeTxt} · ${expTxt}</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;flex-shrink:0">
+          <span class="promo-status-badge ${statusCls}">${statusTxt}</span>
+          <div class="sw-wrap" onclick="togglePromo(${pr.id})"><div class="sw-track ${pr.active&&!expired?'on':''}"><div class="sw-thumb"></div></div></div>
+          <button class="tbl-btn danger" onclick="deletePromo(${pr.id})">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join(''):`<p style="font-size:12px;color:var(--brown);font-style:italic">No hay descuentos creados</p>`;
+}
+function togglePromo(id){const p=promos.find(x=>x.id===id);if(p){p.active=!p.active;renderPromos();renderProducts(currentFilter);renderOffers();}}
+function deletePromo(id){if(confirm('¿Eliminar?')){promos=promos.filter(x=>x.id!==id);renderPromos();renderProducts(currentFilter);showToast('Descuento eliminado');}}
+
+function openPromoModal(){
+  document.getElementById('pm-name').value='';document.getElementById('pm-label').value='';
+  document.getElementById('pm-type').value='pct';document.getElementById('pm-val').value='';
+  document.getElementById('pm-scope').value='all';document.getElementById('pm-expires').value='';
+  document.getElementById('pm-color').value='#C9A96E';
+  togglePromoScope();
+  populateCatSelect('pm-cat-sel');populateProductSelect('pm-prod-sel');
+  updatePromoPreview();
+  openModal('promo-modal');
+}
+function togglePromoScope(){
+  const s=document.getElementById('pm-scope').value;
+  document.getElementById('pm-cat-wrap').style.display=s==='cat'?'block':'none';
+  document.getElementById('pm-prod-wrap').style.display=s==='product'?'block':'none';
+}
+function updatePromoPreview(){
+  const txt=document.getElementById('pm-label').value||document.getElementById('pm-name').value||'PROMO';
+  const col=document.getElementById('pm-color').value||'#C9A96E';
+  const b=document.getElementById('pm-badge-preview');
+  if(b){b.textContent=txt;b.style.background=col;}
+}
+// Live preview hooks
+setTimeout(()=>{
+  ['pm-label','pm-name','pm-color'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',updatePromoPreview);});
+},600);
+
+function savePromo(){
+  const name=document.getElementById('pm-name').value.trim();if(!name){showToast('Ingresá el nombre');return;}
+  const scope=document.getElementById('pm-scope').value;
+  promos.push({id:Date.now(),name,
+    labelText:document.getElementById('pm-label').value||name,
+    type:document.getElementById('pm-type').value,
+    val:parseFloat(document.getElementById('pm-val').value)||0,
+    scope,catId:scope==='cat'?document.getElementById('pm-cat-sel').value:null,
+    productId:scope==='product'?parseInt(document.getElementById('pm-prod-sel').value):null,
+    expires:document.getElementById('pm-expires').value||'',
+    color:document.getElementById('pm-color').value||'#C9A96E',
+    active:true,
+  });
+  closeModal('promo-modal');renderPromos();renderProducts(currentFilter);showToast('✓ Descuento creado');
+}
+
+// ═══════ CUPONES ═══════
+function renderCoupons(){
+  const now=new Date();
+  document.getElementById('coupons-list').innerHTML=coupons.length?coupons.map(cp=>{
+    const expired=cp.expires&&new Date(cp.expires)<now;
+    const pct=cp.maxUses>0?Math.min(100,Math.round((cp.uses/cp.maxUses)*100)):0;
+    const valTxt=cp.type==='pct'?cp.val+'% OFF':'−'+fmt(cp.val);
+    const minTxt=cp.minPurchase>0?`Mín. ${fmt(cp.minPurchase)}`:'Sin mínimo';
+    const usesTxt=cp.maxUses>0?`${cp.uses}/${cp.maxUses} usos`:'Usos ilimitados';
+    const expTxt=cp.expires?new Date(cp.expires).toLocaleDateString('es-AR'):'Sin vencimiento';
+    const statusCls=!cp.active?'status-paused':expired?'status-expired':'status-active';
+    const statusTxt=!cp.active?'Inactivo':expired?'Vencido':'Activo';
+    return`<div class="coupon-card">
+      <div style="display:flex;align-items:flex-start;gap:.75rem;flex-wrap:wrap">
+        <div style="flex:1;min-width:0">
+          <div class="coupon-code-chip">${cp.code}</div>
+          <p style="font-size:12px;font-weight:600;color:var(--dark)">${cp.name}</p>
+          <p style="font-size:10px;color:var(--brown);font-weight:300;line-height:1.6">${valTxt} · ${minTxt} · ${usesTxt} · Vence: ${expTxt}</p>
+          ${cp.maxUses>0?`<div class="uses-bar"><div class="uses-bar-fill" style="width:${pct}%"></div></div>`:''}
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;flex-shrink:0">
+          <span class="promo-status-badge ${statusCls}">${statusTxt}</span>
+          <div class="sw-wrap" onclick="toggleCoupon(${cp.id})"><div class="sw-track ${cp.active&&!expired?'on':''}"><div class="sw-thumb"></div></div></div>
+          <button class="tbl-btn danger" onclick="deleteCoupon(${cp.id})">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join(''):`<p style="font-size:12px;color:var(--brown);font-style:italic">No hay cupones creados</p>`;
+}
+function toggleCoupon(id){const c=coupons.find(x=>x.id===id);if(c){c.active=!c.active;renderCoupons();}}
+function deleteCoupon(id){if(confirm('¿Eliminar cupón?')){coupons=coupons.filter(x=>x.id!==id);renderCoupons();showToast('Cupón eliminado');}}
+function openCouponModal(){
+  ['cp-code','cp-name','cp-val','cp-min','cp-maxuses','cp-expires'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('cp-type').value='pct';openModal('coupon-modal');
+}
+function saveCoupon(){
+  const code=document.getElementById('cp-code').value.trim().toUpperCase();if(!code){showToast('Ingresá el código');return;}
+  if(coupons.find(c=>c.code===code)){showToast('Ya existe ese código');return;}
+  coupons.push({id:Date.now(),code,name:document.getElementById('cp-name').value||code,
+    type:document.getElementById('cp-type').value,val:parseFloat(document.getElementById('cp-val').value)||0,
+    minPurchase:parseInt(document.getElementById('cp-min').value)||0,
+    maxUses:parseInt(document.getElementById('cp-maxuses').value)||0,
+    uses:0,expires:document.getElementById('cp-expires').value||'',active:true});
+  closeModal('coupon-modal');renderCoupons();showToast('✓ Cupón creado: '+code);
+}
+
+// ═══════ EDITOR ═══════
+function renderEditorTab(){
+  document.getElementById('ed-label').value=siteConfig.heroLabel;
+  document.getElementById('ed-title').value=siteConfig.heroTitle;
+  document.getElementById('ed-desc').value=siteConfig.heroDesc;
+  document.getElementById('ed-ig').value=siteConfig.igLink||'';
+  document.getElementById('ed-tt').value=siteConfig.ttLink||'';
+  // banner
+  document.getElementById('ed-banner-text').value=siteConfig.bannerText||'';
+  document.getElementById('ed-banner-color').value=siteConfig.bannerColor||'#C9A96E';
+  document.getElementById('ed-banner-visible').checked=siteConfig.bannerVisible!==false;
+  // section texts
+  document.getElementById('ed-ofertas-title').value=siteConfig.ofertasTitle||'';
+  document.getElementById('ed-ofertas-sub').value=siteConfig.ofertasSub||'';
+  document.getElementById('ed-coleccion-title').value=siteConfig.coleccionTitle||'';
+  document.getElementById('ed-coleccion-sub').value=siteConfig.coleccionSub||'';
+  document.getElementById('ed-faq-title').value=siteConfig.faqTitle||'';
+  document.getElementById('ed-faq-sub').value=siteConfig.faqSub||'';
+  // hero colors
+  ['label','title','desc'].forEach(k=>{
+    const v=siteConfig['hero'+k.charAt(0).toUpperCase()+k.slice(1)+'Color']||'#333';
+    const el=document.getElementById('col-hero-'+k);const hex=document.getElementById('col-hero-'+k+'-hex');
+    if(el)el.value=v;if(hex)hex.value=v;
+  });
+  renderEditorFonts();renderEditorColors();renderEditorSizes();
+}
+function renderEditorFonts(){
+  document.getElementById('font-grid-titles').innerHTML=titleFonts.map(f=>`<button class="font-btn ${designConfig.titleFont===f.name?'active':''}" style="${f.css}" onclick="setTitleFont('${f.name}',this)">${f.name}</button>`).join('');
+  document.getElementById('font-grid-body').innerHTML=bodyFonts.map(f=>`<button class="font-btn ${designConfig.bodyFont===f.name?'active':''}" style="${f.css}" onclick="setBodyFont('${f.name}',this)">${f.name}</button>`).join('');
+}
+function renderEditorColors(){
+  const wrap=document.getElementById('color-pickers');
+  wrap.innerHTML=Object.entries(designConfig.colors).map(([k,v])=>`
+    <div class="form-group" style="margin:0">
+      <label>${colorLabels[k]||k}</label>
+      <div style="display:flex;gap:.4rem;align-items:center">
+        <input type="color" id="col-${k}" value="${v}" oninput="applyColors()" style="width:38px;height:34px;border:1px solid var(--tan);padding:2px;cursor:pointer">
+        <input type="text" id="col-${k}-hex" value="${v}" oninput="syncColorHex('${k}')" style="flex:1;border:1px solid var(--tan);padding:7px 8px;font-size:11px;background:var(--cream);color:var(--dark);outline:none;font-family:'Montserrat',sans-serif">
+      </div>
+    </div>`).join('');
+}
+function renderEditorSizes(){
+  const map={hero:'szHero',sec:'szSec',body:'szBody',price:'szPrice',prod:'szProd',img:'szImg'};
+  Object.entries(map).forEach(([k,v])=>{const el=document.getElementById('sz-'+k);if(el)el.value=designConfig[v];});
+}
+function setTitleFont(name,btn){
+  designConfig.titleFont=name;
+  document.querySelectorAll('#font-grid-titles .font-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  applyDesignSystem();showToast('Título: '+name);
+}
+function setBodyFont(name,btn){
+  designConfig.bodyFont=name;
+  document.querySelectorAll('#font-grid-body .font-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  applyDesignSystem();showToast('Texto: '+name);
+}
+function liveHero(){
+  document.getElementById('hero-label-el').textContent=document.getElementById('ed-label').value;
+  document.getElementById('hero-title-el').textContent=document.getElementById('ed-title').value;
+  document.getElementById('hero-desc-el').textContent=document.getElementById('ed-desc').value;
+}
+function liveBanner(){
+  const text=document.getElementById('ed-banner-text').value;
+  const color=document.getElementById('ed-banner-color').value;
+  const visible=document.getElementById('ed-banner-visible').checked;
+  const banner=document.getElementById('promo-banner');
+  if(!banner)return;
+  banner.style.display=visible?'flex':'none';
+  banner.style.background=color;
+  const span=banner.querySelector('span');
+  if(span)span.textContent=text;
+}
+function saveBanner(){
+  siteConfig.bannerText=document.getElementById('ed-banner-text').value;
+  siteConfig.bannerColor=document.getElementById('ed-banner-color').value;
+  siteConfig.bannerVisible=document.getElementById('ed-banner-visible').checked;
+  liveBanner();
+  const s=document.getElementById('banner-saved');s.style.display='inline';setTimeout(()=>s.style.display='none',2000);
+}
+function applyBanner(){
+  const banner=document.getElementById('promo-banner');if(!banner)return;
+  banner.style.display=siteConfig.bannerVisible?'flex':'none';
+  banner.style.background=siteConfig.bannerColor;
+  const span=banner.querySelector('span');
+  if(span)span.textContent=siteConfig.bannerText;
+}
+function liveSections(){
+  const map={
+    'ofertas-title':'ofertas-title','ofertas-sub':'ofertas-sub',
+    'coleccion-title':'coleccion-title','coleccion-sub':'coleccion-sub',
+    'faq-title':'faq-sec-title','faq-sub':'faq-sec-sub',
+  };
+  Object.entries(map).forEach(([inputId,elId])=>{
+    const input=document.getElementById('ed-'+inputId);
+    const el=document.getElementById(elId);
+    if(input&&el) el.textContent=input.value;
+  });
+}
+function saveSections(){
+  siteConfig.ofertasTitle=document.getElementById('ed-ofertas-title').value;
+  siteConfig.ofertasSub=document.getElementById('ed-ofertas-sub').value;
+  siteConfig.coleccionTitle=document.getElementById('ed-coleccion-title').value;
+  siteConfig.coleccionSub=document.getElementById('ed-coleccion-sub').value;
+  siteConfig.faqTitle=document.getElementById('ed-faq-title').value;
+  siteConfig.faqSub=document.getElementById('ed-faq-sub').value;
+  liveSections();
+  const s=document.getElementById('sections-saved');s.style.display='inline';setTimeout(()=>s.style.display='none',2000);
+}
+function saveHero(){
+  siteConfig.heroLabel=document.getElementById('ed-label').value;
+  siteConfig.heroTitle=document.getElementById('ed-title').value;
+  siteConfig.heroDesc=document.getElementById('ed-desc').value;
+  liveHero();applyHeroColors();
+  const s=document.getElementById('hero-saved');s.style.display='inline';setTimeout(()=>s.style.display='none',2000);
+}
+function saveSocial(){
+  siteConfig.igLink=document.getElementById('ed-ig').value;
+  siteConfig.ttLink=document.getElementById('ed-tt').value;
+  if(siteConfig.igLink){document.getElementById('footer-ig').href=siteConfig.igLink;}
+  if(siteConfig.ttLink){document.getElementById('footer-tt').href=siteConfig.ttLink;document.getElementById('float-tt').href=siteConfig.ttLink;}
+  const s=document.getElementById('social-saved');s.style.display='inline';setTimeout(()=>s.style.display='none',2000);
+}
+
+// ═══════ SECCIONES DRAG ═══════
+function renderSeccionesAdmin(){
+  document.getElementById('secciones-list').innerHTML=sectionOrder.map(id=>{
+    const s=sectionMeta[id];
+    return`<div class="sec-drag-item" draggable="true"
+      ondragstart="onDragStart(event,'${id}')" ondragover="onDragOver(event,'${id}')"
+      ondrop="onDrop(event,'${id}')" ondragend="onDragEnd()">
+      <span class="drag-handle">☰</span>
+      <div style="flex:1">
+        <p style="font-size:13px;font-weight:500;color:var(--dark)">${s.name}</p>
+        <p style="font-size:11px;color:var(--brown);font-weight:300;margin-top:2px">${s.desc}</p>
+      </div>
+      <div class="sw-wrap" onclick="toggleSection('${id}')"><div class="sw-track ${s.visible?'on':''}"><div class="sw-thumb"></div></div></div>
+    </div>`;
+  }).join('');
+}
+function onDragStart(e,id){dragSrc=id;e.currentTarget.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
+function onDragOver(e,id){e.preventDefault();if(id!==dragSrc)e.currentTarget.classList.add('drag-over');}
+function onDrop(e,id){
+  e.preventDefault();
+  if(dragSrc&&id!==dragSrc){
+    const from=sectionOrder.indexOf(dragSrc);const to=sectionOrder.indexOf(id);
+    if(from>-1&&to>-1){sectionOrder.splice(from,1);sectionOrder.splice(to,0,dragSrc);}
+    renderSeccionesAdmin();applySectionOrder();showToast('Sección reordenada');
+  }
+}
+function onDragEnd(){document.querySelectorAll('.sec-drag-item').forEach(el=>el.classList.remove('dragging','drag-over'));dragSrc=null;}
+function toggleSection(id){sectionMeta[id].visible=!sectionMeta[id].visible;renderSeccionesAdmin();applySectionVisibility();}
+
+// ═══════ CARRUSEL ═══════
+function renderCarouselAdmin(){
+  document.getElementById('carousel-list').innerHTML=carouselImages.length?
+    carouselImages.map((img,i)=>`<div class="carousel-item">
+      <img src="${img.url}" onerror="this.style.background='var(--beige)'" alt="">
+      <span style="flex:1;font-size:12px;color:var(--dark);font-weight:500;word-break:break-all">${img.desc||img.url.substring(0,50)+'...'}</span>
+      <button class="tbl-btn danger" onclick="removeCarouselImg(${i})">Quitar</button>
+    </div>`).join(''):
+    `<p style="font-size:12px;color:var(--brown);font-style:italic">No hay imágenes. Se muestra el fondo degradé.</p>`;
+}
+function saveCarouselImg(){
+  const url=document.getElementById('ci-url').value.trim();if(!url){showToast('Ingresá una URL');return;}
+  carouselImages.push({url,desc:document.getElementById('ci-desc').value});
+  document.getElementById('ci-url').value='';document.getElementById('ci-desc').value='';
+  closeModal('carousel-modal');renderCarouselAdmin();renderCarousel();showToast('✓ Imagen agregada');
+}
+function removeCarouselImg(i){carouselImages.splice(i,1);renderCarouselAdmin();renderCarousel();showToast('Imagen eliminada');}
+
+// ═══════ RECOMENDADOR ADMIN ═══════
+function renderRecAdmin(){
+  document.getElementById('rec-intro-edit').value=document.getElementById('rec-intro-txt').textContent;
+  document.getElementById('rec-questions-list').innerHTML=recQuestions.map((q,i)=>`
+    <div class="rec-q-item">
+      <p style="font-size:12px;font-weight:600;color:var(--dark);margin-bottom:.6rem">${i+1}. ${q.q}</p>
+      <div style="margin-bottom:.6rem">${q.opts.map((o,j)=>`<span class="rec-opt-tag">${o}<button onclick="removeRecOpt(${i},${j})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:11px;padding:0 0 0 .2rem">✕</button></span>`).join('')}</div>
+      <button class="tbl-btn" onclick="openRecQModal(${i})">Editar</button>
+    </div>`).join('');
+}
+function saveRecIntro(){
+  const txt=document.getElementById('rec-intro-edit').value;
+  document.getElementById('rec-intro-txt').textContent=txt;
+  const s=document.getElementById('rec-intro-saved');s.style.display='inline';setTimeout(()=>s.style.display='none',2000);
+}
+function removeRecOpt(qi,oi){recQuestions[qi].opts.splice(oi,1);renderRecAdmin();}
+function openRecQModal(idx){
+  recQEditing=idx;const q=recQuestions[idx];
+  document.getElementById('rqm-q').value=q.q;
+  document.getElementById('rqm-opts').value=q.opts.join('\n');
+  openModal('recq-modal');
+}
+function saveRecQ(){
+  if(recQEditing===null)return;
+  const q=document.getElementById('rqm-q').value.trim();
+  const opts=document.getElementById('rqm-opts').value.split('\n').map(o=>o.trim()).filter(Boolean);
+  if(!q||!opts.length){showToast('Completá pregunta y opciones');return;}
+  recQuestions[recQEditing].q=q;recQuestions[recQEditing].opts=opts;
+  closeModal('recq-modal');renderRecAdmin();showToast('✓ Pregunta actualizada');
+}
+
+// ═══════ FAQ ═══════
+function renderFaqsAdmin(){
+  document.getElementById('faqs-admin-list').innerHTML=faqs.map(f=>`
+    <div class="list-item">
+      <div style="flex:1">
+        <p style="font-size:12px;font-weight:600;color:var(--dark)">${f.q}</p>
+        <p style="font-size:11px;color:var(--brown);font-weight:300;margin-top:2px">${f.a.substring(0,80)}${f.a.length>80?'...':''}</p>
+      </div>
+      <button class="tbl-btn" onclick="openFaqModal(${f.id})">Editar</button>
+      <button class="tbl-btn danger" onclick="deleteFaq(${f.id})">✕</button>
+    </div>`).join('')||`<p style="font-size:12px;color:var(--brown);font-style:italic">No hay preguntas</p>`;
+}
+function openFaqModal(id){
+  faqEditing=id||null;
+  document.getElementById('faq-modal-title').textContent=id?'EDITAR PREGUNTA':'NUEVA PREGUNTA';
+  if(id){const f=faqs.find(x=>x.id===id);document.getElementById('fm-q').value=f.q;document.getElementById('fm-a').value=f.a;}
+  else{document.getElementById('fm-q').value='';document.getElementById('fm-a').value='';}
+  openModal('faq-modal');
+}
+function saveFaq(){
+  const q=document.getElementById('fm-q').value.trim();const a=document.getElementById('fm-a').value.trim();
+  if(!q||!a){showToast('Completá pregunta y respuesta');return;}
+  if(faqEditing){const f=faqs.find(x=>x.id===faqEditing);f.q=q;f.a=a;}
+  else faqs.push({id:Date.now(),q,a});
+  closeModal('faq-modal');renderFaqsAdmin();renderFAQsHome();showToast('FAQ guardado');
+}
+function deleteFaq(id){if(confirm('¿Eliminar?')){faqs=faqs.filter(x=>x.id!==id);renderFaqsAdmin();renderFAQsHome();showToast('Pregunta eliminada');}}
+
+// ═══════ CATEGORÍAS ═══════
+function renderCatsAdmin(){
+  document.getElementById('cats-admin-list').innerHTML=categories.map(c=>`
+    <div class="list-item">
+      <div style="flex:1">
+        <p style="font-size:13px;font-weight:600;color:var(--dark)">${c.name}</p>
+        <p style="font-size:10px;color:var(--brown);font-weight:300">ID: ${c.id}</p>
+      </div>
+      <button class="tbl-btn" onclick="openCatModal('${c.id}')">Editar</button>
+      <button class="tbl-btn danger" onclick="deleteCat('${c.id}')">✕</button>
+    </div>`).join('')||`<p style="font-size:12px;color:var(--brown);font-style:italic">No hay categorías</p>`;
+}
+function openCatModal(id){
+  catEditing=id||null;
+  document.getElementById('cat-modal-title').textContent=id?'EDITAR CATEGORÍA':'NUEVA CATEGORÍA';
+  if(id){const c=categories.find(x=>x.id===id);document.getElementById('cm-name').value=c.name;document.getElementById('cm-slug').value=c.id;document.getElementById('cm-desc').value=c.desc;document.getElementById('cm-label').value=c.label;}
+  else['cm-name','cm-slug','cm-desc','cm-label'].forEach(x=>{document.getElementById(x).value='';});
+  openModal('cat-modal');
+}
+function saveCat(){
+  const name=document.getElementById('cm-name').value.trim();const slug=document.getElementById('cm-slug').value.trim().replace(/\s+/g,'_');
+  if(!name||!slug){showToast('Completá nombre y slug');return;}
+  const obj={id:slug,name,label:document.getElementById('cm-label').value||name,desc:document.getElementById('cm-desc').value};
+  if(catEditing){const i=categories.findIndex(x=>x.id===catEditing);categories[i]=obj;}else categories.push(obj);
+  closeModal('cat-modal');renderCatsAdmin();renderCatsGrid();renderNavFilters();
+  const np=document.getElementById('np-cat');if(np)np.innerHTML=categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  showToast('Categoría guardada');
+}
+function deleteCat(id){if(confirm('¿Eliminar?')){categories=categories.filter(x=>x.id!==id);renderCatsAdmin();renderCatsGrid();renderNavFilters();showToast('Eliminada');}}
+
+// ═══════ TABS ═══════
+function switchTab(name,btn){
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.admin-sec').forEach(s=>s.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='productos')renderAdminTable();
+  if(name==='resumen'){renderStats();renderLowStock();}
+  if(name==='analytics')renderAnalytics();
+  if(name==='promos')renderPromos();
+  if(name==='cupones')renderCoupons();
+  if(name==='editor')renderEditorTab();
+  if(name==='secciones')renderSeccionesAdmin();
+  if(name==='carrusel')renderCarouselAdmin();
+  if(name==='recomendador')renderRecAdmin();
+  if(name==='faqs')renderFaqsAdmin();
+  if(name==='cats')renderCatsAdmin();
+  if(name==='nuevo'){const sel=document.getElementById('np-cat');if(sel)sel.innerHTML=categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');}
+}
+
+// ═══════ BACK TO TOP ═══════
+window.addEventListener('scroll',()=>{
+  const btn=document.getElementById('back-top');
+  if(btn)btn.classList.toggle('visible',window.scrollY>400);
+});
+
+// ═══════ INIT ═══════
+renderNav();
+renderAll();
+</script>
+</body>
+</html>
